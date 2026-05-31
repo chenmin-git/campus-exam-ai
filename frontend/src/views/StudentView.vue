@@ -340,7 +340,7 @@ async function enterFullscreen() {
 }
 
 function typeName(type) {
-  return { SINGLE: '单选', MULTIPLE: '多选', JUDGE: '判断' }[type] || type
+  return { SINGLE: '单选', MULTIPLE: '多选', JUDGE: '判断', SHORT: '简答', PROGRAM: '编程' }[type] || type
 }
 
 function exportAttempts() {
@@ -369,7 +369,13 @@ const handleBlur = () => {
     recordMonitor('BLUR', '窗口失焦')
   }
 }
+const handleFullscreenChange = () => {
+  if (current.value && !document.fullscreenElement) {
+    recordMonitor('FULLSCREEN_EXIT', '退出全屏考试')
+  }
+}
 document.addEventListener('visibilitychange', handleVisibility)
+document.addEventListener('fullscreenchange', handleFullscreenChange)
 window.addEventListener('blur', handleBlur)
 watch(() => route.params.section, (section) => {
   active.value = section || 'exams'
@@ -377,6 +383,7 @@ watch(() => route.params.section, (section) => {
 onUnmounted(() => {
   clearInterval(timer)
   document.removeEventListener('visibilitychange', handleVisibility)
+  document.removeEventListener('fullscreenchange', handleFullscreenChange)
   window.removeEventListener('blur', handleBlur)
 })
 </script>

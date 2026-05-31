@@ -28,6 +28,14 @@
       </div>
     </div>
 
+    <div class="insight-grid">
+      <div v-for="item in insightCards" :key="item.label" class="insight-card">
+        <span>{{ item.label }}</span>
+        <strong>{{ item.value }}</strong>
+        <em>{{ item.hint }}</em>
+      </div>
+    </div>
+
     <div v-if="auth.user?.role === 'ADMIN'" class="dashboard-layout admin-layout">
       <section class="panel chart-panel">
         <div class="panel-head">
@@ -185,6 +193,21 @@
           <router-link to="/student/attempts">个人最高分 <strong>{{ dashboard.bestScore || 0 }}</strong></router-link>
         </div>
       </section>
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>薄弱知识点</h3>
+            <span>根据错题自动归纳</span>
+          </div>
+        </div>
+        <div v-if="weakKnowledgeRows.length" class="knowledge-list">
+          <div v-for="item in weakKnowledgeRows" :key="item.knowledgePoint">
+            <span>{{ item.knowledgePoint }}</span>
+            <strong>{{ item.wrongCount }} 题</strong>
+          </div>
+        </div>
+        <el-empty v-else description="暂无错题薄弱项" />
+      </section>
     </div>
 
     <section class="panel announcement-panel">
@@ -232,8 +255,8 @@ const dashboard = ref({})
 const announcementPager = createPager(5)
 const announcementRows = computed(() => announcements.value)
 const pagedAnnouncements = usePagedRows(announcementRows, announcementPager)
-const colors = ['#00a1d6', '#fb7299', '#ffd36e', '#56c2a8']
-const typeNames = { SINGLE: '单选题', MULTIPLE: '多选题', JUDGE: '判断题' }
+const colors = ['#00a1d6', '#fb7299', '#ffd36e', '#56c2a8', '#7c3aed']
+const typeNames = { SINGLE: '单选题', MULTIPLE: '多选题', JUDGE: '判断题', SHORT: '简答题', PROGRAM: '编程题' }
 const roleName = computed(() => ({ ADMIN: '管理员', TEACHER: '教师', STUDENT: '学生' }[auth.user?.role] || '用户'))
 const roleCopy = computed(() => {
   if (auth.user?.role === 'TEACHER') {
@@ -285,10 +308,32 @@ const metricCards = computed(() => [
       : [
           { label: '用户总数', value: dashboard.value.userCount || 0, hint: `学生 ${dashboard.value.studentCount || 0} · 教师 ${dashboard.value.teacherCount || 0}`, icon: User },
           { label: '课程数量', value: dashboard.value.courseCount || 0, hint: '已维护课程', icon: Notebook },
-          { label: '题库题量', value: dashboard.value.questionCount || 0, hint: '客观题总数', icon: EditPen },
+          { label: '题库题量', value: dashboard.value.questionCount || 0, hint: `主观题 ${dashboard.value.subjectiveQuestionCount || 0}`, icon: EditPen },
           { label: '考试记录', value: dashboard.value.attemptCount || 0, hint: `均分 ${dashboard.value.averageScore || 0}`, icon: DataAnalysis }
         ])
 ])
+
+const insightCards = computed(() => {
+  if (auth.user?.role === 'STUDENT') {
+    return [
+      { label: '当前最高分', value: dashboard.value.bestScore || 0, hint: '历史最佳表现' },
+      { label: '待复核记录', value: dashboard.value.pendingReviewCount || 0, hint: '主观题阅卷中' },
+      { label: '重点复习', value: weakKnowledgeRows.value[0]?.knowledgePoint || '暂无', hint: weakKnowledgeRows.value[0] ? `${weakKnowledgeRows.value[0].wrongCount} 道错题` : '继续保持' }
+    ]
+  }
+  if (auth.user?.role === 'TEACHER') {
+    return [
+      { label: '待人工阅卷', value: dashboard.value.pendingReviewCount || 0, hint: '需要教师处理' },
+      { label: '待处理申诉', value: dashboard.value.pendingAppealCount || 0, hint: '学生复查申请' },
+      { label: '覆盖班级', value: (dashboard.value.classCoverage || []).length, hint: classCoverageHint.value }
+    ]
+  }
+  return [
+    { label: '班级规模', value: dashboard.value.classCount || 0, hint: '已维护班级' },
+    { label: '发布试卷', value: dashboard.value.publishedPaperCount || 0, hint: `总试卷 ${dashboard.value.paperCount || 0}` },
+    { label: '待复核考试', value: dashboard.value.pendingReviewCount || 0, hint: '主观题待阅卷' }
+  ]
+})
 
 const questionTypeRows = computed(() => Object.entries(dashboard.value.questionTypes || {}).map(([key, value], index) => ({
   label: typeNames[key] || key,
@@ -313,6 +358,12 @@ const studentScoreTrend = computed(() => (dashboard.value.scoreTrend || []).slic
 const paperStatusRows = computed(() => Object.entries(dashboard.value.paperStatus || {}).map(([label, value]) => ({ label, value })))
 const maxCourseCount = computed(() => Math.max(1, ...(dashboard.value.courseQuestions || []).map((item) => item.count)))
 const maxStudyCount = computed(() => Math.max(1, ...(dashboard.value.studyProgress || []).map((item) => item.count)))
+const weakKnowledgeRows = computed(() => dashboard.value.weakKnowledgePoints || [])
+const classCoverageHint = computed(() => {
+  const rows = dashboard.value.classCoverage || []
+  if (!rows.length) return '暂无授课绑定'
+  return rows.slice(0, 2).map((row) => `${row.className}·${row.courseName}`).join('；')
+})
 
 function scoreHeight(score) {
   return `${Math.max(10, score || 0)}%`
@@ -445,6 +496,39 @@ onMounted(load)
   color: #10243a;
   font-size: 30px;
   line-height: 1;
+}
+
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.insight-card {
+  min-height: 86px;
+  padding: 14px 16px;
+  border: 1px solid #dfeaf6;
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .86);
+  box-shadow: 0 8px 22px rgba(31, 42, 68, .05);
+}
+
+.insight-card span,
+.insight-card em {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-style: normal;
+}
+
+.insight-card strong {
+  display: block;
+  margin: 5px 0;
+  color: #10243a;
+  font-size: 22px;
+  line-height: 1.2;
+  word-break: break-word;
 }
 
 .dashboard-layout {
@@ -632,6 +716,31 @@ onMounted(load)
   color: var(--accent);
 }
 
+.knowledge-list {
+  display: grid;
+  gap: 10px;
+}
+
+.knowledge-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #dff3ff;
+  border-radius: 10px;
+  background: #f5fbff;
+}
+
+.knowledge-list span {
+  color: #24364b;
+  font-weight: 700;
+}
+
+.knowledge-list strong {
+  color: var(--accent);
+  white-space: nowrap;
+}
+
 .announcement-panel {
   margin-bottom: 8px;
 }
@@ -639,6 +748,10 @@ onMounted(load)
 @media (max-width: 1180px) {
   .metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .insight-grid {
+    grid-template-columns: 1fr;
   }
 
   .dashboard-layout,

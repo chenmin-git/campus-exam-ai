@@ -336,6 +336,7 @@ public class ExamService {
         int finalScore = Math.min(request.score(), maxScore);
         answer.setManualScore(finalScore);
         answer.setScore(finalScore);
+        answer.setCorrect(finalScore >= maxScore ? 1 : 0);
         answer.setTeacherComment(request.comment());
         answer.setReviewStatus("REVIEWED");
         answerMapper.updateById(answer);
@@ -367,9 +368,10 @@ public class ExamService {
             row.put("averageScore", round(list.stream().filter(a -> a.getScore() != null).mapToInt(ExamAttempt::getScore).average().orElse(0)));
             row.put("maxScore", list.stream().mapToInt(a -> a.getScore() == null ? 0 : a.getScore()).max().orElse(0));
             row.put("minScore", list.stream().mapToInt(a -> a.getScore() == null ? 0 : a.getScore()).min().orElse(0));
-            row.put("passRate", list.isEmpty() ? 0 : round((double) list.stream().filter(a -> (a.getScore() != null ? a.getScore() : 0) >= (paper == null || paper.getTotalScore() == null ? 60 : paper.getTotalScore() * 0.6)).count() * 100 / list.size()));
-            row.put("questionAccuracy", questionAccuracy(paperId));
-            row.put("weakKnowledgePoints", weakKnowledgePoints(paperId));
+            row.put("passRate", list.isEmpty() ? 0 : round((double) list.stream().filter(a -> (a.getScore() != null ? a.getScore() : 0) >= passLine(paper)).count() * 100 / list.size()));
+            row.put("classStats", classStats(list, paper));
+            row.put("questionAccuracy", questionAccuracy(paperId, list));
+            row.put("weakKnowledgePoints", weakKnowledgePoints(paperId, list));
             result.add(row);
         }
         return result;
@@ -531,29 +533,59 @@ public class ExamService {
         return link == null || link.getScore() == null ? 0 : link.getScore();
     }
 
-    private List<Map<String, Object>> questionAccuracy(Long paperId) {
+    private List<Map<String, Object>> classStats(List<ExamAttempt> attempts, Paper paper) {
+        Map<Long, List<ExamAttempt>> byClass = new LinkedHashMap<>();
+        for (ExamAttempt attempt : attempts) {
+            User student = userMapper.selectById(attempt.getStudentId());
+            Long classId = student == null || student.getClassId() == null ? 0L : student.getClassId();
+            byClass.computeIfAbsent(classId, ignored -> new ArrayList<>()).add(attempt);
+        }
+        return byClass.entrySet().stream().map(entry -> {
+            Long classId = entry.getKey();
+            List<ExamAttempt> list = entry.getValue();
+            ClassInfo classInfo = classId == 0 ? null : classInfoMapper.selectById(classId);
+            Map<String, Object> row = new LinkedHashMap<>();
+            row.put("classId", classId == 0 ? null : classId);
+            row.put("className", className(classInfo));
+            row.put("count", list.size());
+            row.put("averageScore", round(list.stream().mapToInt(a -> a.getScore() == null ? 0 : a.getScore()).average().orElse(0)));
+            row.put("maxScore", list.stream().mapToInt(a -> a.getScore() == null ? 0 : a.getScore()).max().orElse(0));
+            row.put("minScore", list.stream().mapToInt(a -> a.getScore() == null ? 0 : a.getScore()).min().orElse(0));
+            row.put("passRate", list.isEmpty() ? 0 : round((double) list.stream().filter(a -> (a.getScore() == null ? 0 : a.getScore()) >= passLine(paper)).count() * 100 / list.size()));
+            return row;
+        }).toList();
+    }
+
+    private List<Map<String, Object>> questionAccuracy(Long paperId, List<ExamAttempt> attempts) {
         List<PaperQuestion> links = paperQuestionMapper.selectList(new LambdaQueryWrapper<PaperQuestion>().eq(PaperQuestion::getPaperId, paperId));
+        Set<Long> attemptIds = attempts.stream().map(ExamAttempt::getId).collect(Collectors.toSet());
         List<Map<String, Object>> rows = new ArrayList<>();
         for (PaperQuestion link : links) {
-            List<StudentAnswer> answers = answerMapper.selectList(new LambdaQueryWrapper<StudentAnswer>().eq(StudentAnswer::getQuestionId, link.getQuestionId()));
+            List<StudentAnswer> answers = attemptIds.isEmpty() ? List.of() : answerMapper.selectList(new LambdaQueryWrapper<StudentAnswer>()
+                    .in(StudentAnswer::getAttemptId, attemptIds)
+                    .eq(StudentAnswer::getQuestionId, link.getQuestionId()));
             long correct = answers.stream().filter(a -> Integer.valueOf(1).equals(a.getCorrect())).count();
             Map<String, Object> row = new LinkedHashMap<>();
             row.put("questionId", link.getQuestionId());
+            row.put("answerCount", answers.size());
+            row.put("correctCount", correct);
             row.put("accuracy", answers.isEmpty() ? 0 : round(correct * 100.0 / answers.size()));
             rows.add(row);
         }
         return rows;
     }
 
-    private List<Map<String, Object>> weakKnowledgePoints(Long paperId) {
+    private List<Map<String, Object>> weakKnowledgePoints(Long paperId, List<ExamAttempt> attempts) {
         List<PaperQuestion> links = paperQuestionMapper.selectList(new LambdaQueryWrapper<PaperQuestion>().eq(PaperQuestion::getPaperId, paperId));
+        Set<Long> attemptIds = attempts.stream().map(ExamAttempt::getId).collect(Collectors.toSet());
         Map<String, Long> map = new LinkedHashMap<>();
         for (PaperQuestion link : links) {
             Question q = questionMapper.selectById(link.getQuestionId());
             if (q == null || q.getKnowledgePoint() == null || q.getKnowledgePoint().isBlank()) {
                 continue;
             }
-            long wrong = answerMapper.selectCount(new LambdaQueryWrapper<StudentAnswer>()
+            long wrong = attemptIds.isEmpty() ? 0 : answerMapper.selectCount(new LambdaQueryWrapper<StudentAnswer>()
+                    .in(StudentAnswer::getAttemptId, attemptIds)
                     .eq(StudentAnswer::getQuestionId, q.getId())
                     .eq(StudentAnswer::getCorrect, 0));
             if (wrong > 0) {
@@ -570,6 +602,19 @@ public class ExamService {
 
     private double round(double value) {
         return Math.round(value * 10.0) / 10.0;
+    }
+
+    private double passLine(Paper paper) {
+        return paper == null || paper.getTotalScore() == null ? 60 : paper.getTotalScore() * 0.6;
+    }
+
+    private String className(ClassInfo classInfo) {
+        if (classInfo == null) {
+            return "未分班";
+        }
+        return Arrays.stream(new String[]{classInfo.getGrade(), classInfo.getMajor(), classInfo.getName()})
+                .filter(value -> value != null && !value.isBlank())
+                .collect(Collectors.joining(" "));
     }
 
     private String normalize(String raw) {

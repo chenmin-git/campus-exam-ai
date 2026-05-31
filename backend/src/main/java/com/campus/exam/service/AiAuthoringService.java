@@ -43,7 +43,7 @@ public class AiAuthoringService {
                 .map(c -> c.getName())
                 .orElse("课程");
         String prompt = """
-                请为高校在线考试系统生成客观题。只返回 JSON，不要 Markdown。
+                请为高校在线考试系统生成考试题。只返回 JSON，不要 Markdown。
                 JSON 格式：
                 {"questions":[{"type":"SINGLE|MULTIPLE|JUDGE","stem":"题干","correctAnswer":"A","analysis":"解析","difficulty":1,"options":[{"optionKey":"A","optionText":"选项"}]}]}
                 要求：
@@ -190,20 +190,7 @@ public class AiAuthoringService {
     }
 
     private AiPaperDraft fallbackPaper(AiPaperGenerateRequest request, List<Question> bank, int count, int totalScore) {
-        List<Question> selected = bank.stream()
-                .filter(q -> matchesKnowledge(request, q))
-                .sorted(Comparator.comparing((Question q) -> typePenalty(request, q))
-                        .thenComparing(q -> difficultyPenalty(request, q))
-                        .thenComparing(Question::getDifficulty)
-                        .thenComparing(Question::getType))
-                .limit(count)
-                .toList();
-        if (selected.size() < count) {
-            selected = bank.stream()
-                    .sorted(Comparator.comparing(Question::getDifficulty).thenComparing(Question::getType))
-                    .limit(count)
-                    .toList();
-        }
+        List<Question> selected = selectQuestions(request, bank, count);
         int baseScore = Math.max(1, totalScore / selected.size());
         List<PaperQuestionRequest> links = new ArrayList<>();
         for (int i = 0; i < selected.size(); i++) {
@@ -217,6 +204,44 @@ public class AiAuthoringService {
         paper.setPublished(0);
         paper.setTotalScore(totalScore);
         return new AiPaperDraft(paper, links);
+    }
+
+    private List<Question> selectQuestions(AiPaperGenerateRequest request, List<Question> bank, int count) {
+        List<Question> pool = bank.stream().filter(q -> matchesKnowledge(request, q)).toList();
+        if (pool.isEmpty()) {
+            pool = bank;
+        }
+        List<Question> selected = new ArrayList<>();
+        Map<String, Integer> typeTargets = new LinkedHashMap<>();
+        typeTargets.put("SINGLE", defaultInt(request.singleCount()));
+        typeTargets.put("MULTIPLE", defaultInt(request.multipleCount()));
+        typeTargets.put("JUDGE", defaultInt(request.judgeCount()));
+        typeTargets.put("SHORT", defaultInt(request.shortCount()));
+        typeTargets.put("PROGRAM", defaultInt(request.programCount()));
+        for (Map.Entry<String, Integer> entry : typeTargets.entrySet()) {
+            pick(selected, pool, count, q -> entry.getKey().equals(q.getType()), entry.getValue(), request);
+        }
+        pick(selected, pool, count, q -> difficultyBand(q) == 1, defaultInt(request.easyCount()), request);
+        pick(selected, pool, count, q -> difficultyBand(q) == 2, defaultInt(request.mediumCount()), request);
+        pick(selected, pool, count, q -> difficultyBand(q) == 3, defaultInt(request.hardCount()), request);
+        pick(selected, pool, count, q -> true, count - selected.size(), request);
+        return selected.stream().limit(count).toList();
+    }
+
+    private void pick(List<Question> selected, List<Question> pool, int count, java.util.function.Predicate<Question> predicate, int target, AiPaperGenerateRequest request) {
+        if (target <= 0 || selected.size() >= count) {
+            return;
+        }
+        Set<Long> selectedIds = selected.stream().map(Question::getId).collect(java.util.stream.Collectors.toSet());
+        pool.stream()
+                .filter(q -> !selectedIds.contains(q.getId()))
+                .filter(predicate)
+                .sorted(Comparator.comparing((Question q) -> typePenalty(request, q))
+                        .thenComparing(q -> difficultyPenalty(request, q))
+                        .thenComparing(q -> Optional.ofNullable(q.getDifficulty()).orElse(1))
+                        .thenComparing(Question::getId, Comparator.reverseOrder()))
+                .limit(Math.min(target, count - selected.size()))
+                .forEach(selected::add);
     }
 
     private String callSpark(String prompt) throws Exception {
@@ -310,11 +335,22 @@ public class AiAuthoringService {
     }
 
     private int difficultyPenalty(AiPaperGenerateRequest request, Question question) {
-        int difficulty = question.getDifficulty() == null ? 1 : question.getDifficulty();
-        boolean wanted = difficulty <= 2 && defaultInt(request.easyCount()) > 0
-                || difficulty == 3 && defaultInt(request.mediumCount()) > 0
-                || difficulty >= 4 && defaultInt(request.hardCount()) > 0;
+        int band = difficultyBand(question);
+        boolean wanted = band == 1 && defaultInt(request.easyCount()) > 0
+                || band == 2 && defaultInt(request.mediumCount()) > 0
+                || band == 3 && defaultInt(request.hardCount()) > 0;
         return wanted ? 0 : 1;
+    }
+
+    private int difficultyBand(Question question) {
+        int difficulty = question.getDifficulty() == null ? 1 : question.getDifficulty();
+        if (difficulty <= 2) {
+            return 1;
+        }
+        if (difficulty == 3) {
+            return 2;
+        }
+        return 3;
     }
 
     private boolean matchesKnowledge(AiPaperGenerateRequest request, Question question) {

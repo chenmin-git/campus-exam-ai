@@ -85,6 +85,7 @@ const menuDefinitions = [
   { code: 'student:wrong', name: '错题解析', module: '学生中心', path: '/student/wrong', icon: Medal },
   { code: 'student:advice', name: '学习建议', module: '学生中心', path: '/student/advice', icon: Notebook },
   { code: 'student:appeals', name: '成绩申诉', module: '学生中心', path: '/student/appeals', icon: Key },
+  { code: 'student:notifications', name: '通知中心', module: '学生中心', path: '/student/notifications', icon: Bell },
   { code: 'student:profile', name: '个人中心', module: '学生中心', path: '/student/profile', icon: UserFilled }
 ]
 

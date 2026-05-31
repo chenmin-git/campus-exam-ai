@@ -236,6 +236,30 @@ INSERT INTO question (id, course_id, creator_id, type, stem, correct_answer, ana
 (11, 4, 4, 'SINGLE', '软件需求规格说明书通常对应哪个阶段产物？', 'A', 'SRS 是需求分析阶段的重要产物。', 2),
 (12, 4, 4, 'JUDGE', '黑盒测试主要关注程序内部代码结构。', 'B', '黑盒测试关注输入输出和功能行为。', 2);
 
+INSERT INTO question (id, course_id, creator_id, type, stem, correct_answer, analysis, knowledge_point, difficulty) VALUES
+(13, 1, 2, 'SHORT', '请简述 Java 面向对象中封装、继承、多态的作用。', '围绕隐藏实现细节、复用父类能力、同一接口多种实现展开说明。', '主观题重点看概念准确性、示例完整性和语言表达。', '面向对象基础', 3),
+(14, 1, 2, 'PROGRAM', '编写一个方法，统计 List<String> 中每个单词出现的次数，并返回 Map<String, Integer>。', '可使用 HashMap 遍历累加，也可使用 Stream 分组统计。', '编程题关注边界处理、集合 API 使用和返回结果正确性。', '集合与Map', 4),
+(15, 2, 2, 'SINGLE', '数据库中用于加速查询但会增加写入维护成本的结构是？', 'C', '索引可以提升查询效率，但插入、更新、删除时需要维护索引。', '索引基础', 2),
+(16, 3, 2, 'MULTIPLE', '以下哪些属于 Vue 常见内置指令？', 'A,B,D', 'v-if、v-for、v-model 都是 Vue 常用内置指令。', 'Vue指令', 2);
+
+UPDATE question
+SET knowledge_point = CASE id
+  WHEN 1 THEN 'Java继承'
+  WHEN 2 THEN '集合框架'
+  WHEN 3 THEN 'SpringBoot基础'
+  WHEN 4 THEN 'SQL查询'
+  WHEN 5 THEN 'ArrayList底层结构'
+  WHEN 6 THEN 'SpringBoot配置'
+  WHEN 7 THEN '事务ACID'
+  WHEN 8 THEN '主键索引'
+  WHEN 9 THEN 'Vue响应式'
+  WHEN 10 THEN 'Axios拦截器'
+  WHEN 11 THEN '需求分析'
+  WHEN 12 THEN '软件测试'
+  ELSE knowledge_point
+END
+WHERE id BETWEEN 1 AND 12;
+
 INSERT INTO question_option (question_id, option_key, option_text) VALUES
 (1, 'A', 'implements'),
 (1, 'B', 'extends'),
@@ -280,11 +304,25 @@ INSERT INTO question_option (question_id, option_key, option_text) VALUES
 (12, 'A', '正确'),
 (12, 'B', '错误');
 
+INSERT INTO question_option (question_id, option_key, option_text) VALUES
+(15, 'A', '视图'),
+(15, 'B', '触发器'),
+(15, 'C', '索引'),
+(15, 'D', '存储过程'),
+(16, 'A', 'v-if'),
+(16, 'B', 'v-for'),
+(16, 'C', 'v-request'),
+(16, 'D', 'v-model');
+
 INSERT INTO paper (id, course_id, creator_id, title, duration_minutes, total_score, published) VALUES
 (1, 1, 2, 'Java程序设计阶段测试', 45, 30, 1),
 (2, 2, 2, '数据库原理单元测验', 40, 30, 1),
 (3, 3, 2, 'Web前端开发课堂练习', 35, 20, 1),
 (4, 4, 4, '软件工程基础测试', 30, 20, 0);
+
+INSERT INTO paper (id, course_id, creator_id, title, duration_minutes, total_score, published, allow_retake, start_time, end_time) VALUES
+(5, 1, 2, 'Java综合主观题模拟', 60, 30, 1, 1, '2026-05-20 08:00:00', '2026-06-30 23:59:59'),
+(6, 2, 2, '数据库索引与事务强化', 45, 40, 1, 0, '2026-05-20 08:00:00', '2026-06-30 23:59:59');
 
 INSERT INTO paper_question (paper_id, question_id, score, sort_no) VALUES
 (1, 1, 10, 1),
@@ -296,13 +334,25 @@ INSERT INTO paper_question (paper_id, question_id, score, sort_no) VALUES
 (3, 9, 10, 1),
 (3, 10, 10, 2),
 (4, 11, 10, 1),
-(4, 12, 10, 2);
+(4, 12, 10, 2),
+(5, 1, 10, 1),
+(5, 13, 10, 2),
+(5, 14, 10, 3),
+(6, 4, 10, 1),
+(6, 7, 10, 2),
+(6, 8, 10, 3),
+(6, 15, 10, 4);
 
 INSERT INTO exam_attempt (id, paper_id, student_id, score, status, started_at, submitted_at, due_at) VALUES
 (1, 1, 3, 20, 'SUBMITTED', '2026-05-25 09:00:00', '2026-05-25 09:35:00', '2026-05-25 09:45:00'),
 (2, 1, 5, 30, 'SUBMITTED', '2026-05-25 09:02:00', '2026-05-25 09:32:00', '2026-05-25 09:47:00'),
 (3, 2, 6, 20, 'SUBMITTED', '2026-05-26 14:00:00', '2026-05-26 14:29:00', '2026-05-26 14:40:00'),
 (4, 3, 7, 10, 'SUBMITTED', '2026-05-27 10:00:00', '2026-05-27 10:25:00', '2026-05-27 10:35:00');
+
+INSERT INTO exam_attempt (id, paper_id, student_id, score, objective_score, subjective_score, status, review_status, started_at, submitted_at, due_at) VALUES
+(5, 5, 3, 10, 10, 0, 'PENDING_REVIEW', 'PENDING', '2026-05-28 09:00:00', '2026-05-28 09:48:00', '2026-05-28 10:00:00'),
+(6, 5, 5, 26, 10, 16, 'SUBMITTED', 'DONE', '2026-05-28 09:05:00', '2026-05-28 09:52:00', '2026-05-28 10:05:00'),
+(7, 6, 6, 30, 30, 0, 'SUBMITTED', 'DONE', '2026-05-29 14:00:00', '2026-05-29 14:36:00', '2026-05-29 14:45:00');
 
 INSERT INTO student_answer (attempt_id, question_id, answer, correct, score) VALUES
 (1, 1, 'B', 1, 10),
@@ -316,6 +366,40 @@ INSERT INTO student_answer (attempt_id, question_id, answer, correct, score) VAL
 (3, 8, 'A', 1, 10),
 (4, 9, 'A', 0, 0),
 (4, 10, 'A,B,C', 1, 10);
+
+INSERT INTO student_answer (attempt_id, question_id, answer, correct, score, manual_score, teacher_comment, review_status) VALUES
+(5, 1, 'B', 1, 10, 10, NULL, 'AUTO'),
+(5, 13, '封装隐藏细节，继承复用代码，多态让同一方法有不同实现。', 0, 0, 0, NULL, 'PENDING'),
+(5, 14, '使用 Map 遍历 List，并用 getOrDefault 累加。', 0, 0, 0, NULL, 'PENDING'),
+(6, 1, 'B', 1, 10, 10, NULL, 'AUTO'),
+(6, 13, '封装保护内部状态，继承复用父类能力，多态支持面向接口编程。', 0, 8, 8, '概念清楚，示例略少。', 'REVIEWED'),
+(6, 14, 'public Map<String,Integer> count(List<String> words){ Map<String,Integer> map=new HashMap<>(); for(String w:words){ map.put(w,map.getOrDefault(w,0)+1); } return map; }', 0, 8, 8, '思路正确，建议补充空值处理。', 'REVIEWED'),
+(7, 4, 'A', 1, 10, 10, NULL, 'AUTO'),
+(7, 7, 'A,B,C,D', 1, 10, 10, NULL, 'AUTO'),
+(7, 8, 'A', 1, 10, 10, NULL, 'AUTO'),
+(7, 15, 'B', 0, 0, 0, NULL, 'AUTO');
+
+INSERT INTO exam_monitor_event (attempt_id, paper_id, student_id, event_type, detail, ip, user_agent, created_at) VALUES
+(5, 5, 3, 'FULLSCREEN_EXIT', '学生考试中退出全屏', '192.168.1.23', 'Chrome / macOS', '2026-05-28 09:20:00'),
+(5, 5, 3, 'BLUR', '窗口失焦 1 次', '192.168.1.23', 'Chrome / macOS', '2026-05-28 09:31:00'),
+(7, 6, 6, 'VISIBILITY_CHANGE', '切换到后台查看资料', '192.168.1.42', 'Edge / Windows', '2026-05-29 14:18:00');
+
+INSERT INTO grade_appeal (attempt_id, student_id, reason, status, reply, reviewer_id, created_at, reviewed_at) VALUES
+(6, 5, '申请复查编程题边界条件给分。', 'PENDING', NULL, NULL, '2026-05-29 16:10:00', NULL);
+
+INSERT INTO notification (user_id, role, title, content, read_flag, created_at) VALUES
+(3, NULL, '主观题等待阅卷', '你提交的《Java综合主观题模拟》包含主观题，请等待教师批改。', 0, '2026-05-28 09:49:00'),
+(5, NULL, '成绩申诉已提交', '你的成绩复查申请已提交，教师会尽快处理。', 0, '2026-05-29 16:11:00'),
+(NULL, 'STUDENT', '数据库强化练习发布', '数据库索引与事务强化试卷已发布，请相关班级同学按时完成。', 0, '2026-05-29 08:30:00');
+
+INSERT INTO operation_log (user_id, username, role, action, target, detail, created_at) VALUES
+(1, 'admin', 'ADMIN', '保存角色权限', 'TEACHER', '授予教师人工阅卷、成绩分析、考试监控权限', '2026-05-28 08:30:00'),
+(2, 'teacher', 'TEACHER', '保存试卷', 'paper:Java综合主观题模拟', '发布包含简答题和编程题的综合练习', '2026-05-28 08:45:00'),
+(3, 'student', 'STUDENT', '提交考试', 'paper:Java综合主观题模拟', '客观题自动得分，主观题进入待阅卷', '2026-05-28 09:48:00');
+
+INSERT INTO backup_record (name, file_path, status, remark, created_at) VALUES
+('开源演示数据备份', 'backup/campus_exam_ai_demo.sql', 'CREATED', '包含题库、试卷、成绩、监控、申诉与通知示例数据', '2026-05-29 18:00:00'),
+('发布前数据快照', 'backup/campus_exam_ai_release.sql', 'RESTORED', '用于演示恢复流程的逻辑记录', '2026-05-30 10:00:00');
 
 INSERT INTO announcement (title, content, creator_id, enabled) VALUES
 ('期末在线考试安排', '请同学们提前检查网络环境，考试开始后按时提交试卷。', 1, 1),
@@ -342,7 +426,8 @@ INSERT INTO permission (code, name, module, path, sort_no) VALUES
 ('student:wrong', '错题解析', '学生中心', '/student/wrong', 52),
 ('student:advice', '学习建议', '学生中心', '/student/advice', 53),
 ('student:appeals', '成绩申诉', '学生中心', '/student/appeals', 54),
-('student:profile', '个人中心', '学生中心', '/student/profile', 55),
+('student:notifications', '通知中心', '学生中心', '/student/notifications', 55),
+('student:profile', '个人中心', '学生中心', '/student/profile', 56),
 ('admin:logs', '操作日志', '系统管理', '/admin/logs', 80),
 ('admin:backup', '备份恢复', '系统管理', '/admin/backup', 81);
 
@@ -366,6 +451,7 @@ INSERT INTO role_permission (role, permission_code) VALUES
 ('ADMIN', 'student:wrong'),
 ('ADMIN', 'student:advice'),
 ('ADMIN', 'student:appeals'),
+('ADMIN', 'student:notifications'),
 ('ADMIN', 'student:profile'),
 ('ADMIN', 'admin:logs'),
 ('ADMIN', 'admin:backup'),
@@ -383,4 +469,5 @@ INSERT INTO role_permission (role, permission_code) VALUES
 ('STUDENT', 'student:wrong'),
 ('STUDENT', 'student:advice'),
 ('STUDENT', 'student:appeals'),
+('STUDENT', 'student:notifications'),
 ('STUDENT', 'student:profile');

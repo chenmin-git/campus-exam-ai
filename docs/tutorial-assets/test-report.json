@@ -1,11 +1,11 @@
 {
-  "startedAt": "2026-05-30T16:47:01.182Z",
+  "startedAt": "2026-05-31T13:38:18.902Z",
   "api": {
     "login:admin": true,
     "login:teacher": true,
     "login:student2": true,
     "adminUsers": 8,
-    "adminPermissions": 22,
+    "adminPermissions": 23,
     "questionImport": {
       "imported": 0,
       "skipped": 1,
@@ -13,11 +13,11 @@
         "第 2 行题干重复，已跳过"
       ]
     },
-    "teacherAnalysis": 5,
-    "teacherMonitor": 2,
-    "teacherAppeals": 2,
-    "studentAdvice": 2,
-    "studentNotifications": 13
+    "teacherAnalysis": 10,
+    "teacherMonitor": 8,
+    "teacherAppeals": 6,
+    "studentAdvice": 4,
+    "studentNotifications": 33
   },
   "screenshots": [
     {
@@ -107,11 +107,11 @@
     }
   ],
   "created": {
-    "backupId": 3,
-    "questionId": 16,
-    "paperId": 6,
-    "attemptId": 7,
-    "appealId": 2
+    "backupId": 9,
+    "questionId": 23,
+    "paperId": 11,
+    "attemptId": 13,
+    "appealId": 6
   },
-  "finishedAt": "2026-05-30T16:47:37.759Z"
+  "finishedAt": "2026-05-31T13:38:47.351Z"
 }

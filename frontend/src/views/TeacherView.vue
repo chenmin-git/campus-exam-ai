@@ -135,6 +135,16 @@
               <span v-for="kp in row.weakKnowledgePoints" :key="kp.knowledgePoint" class="chip">{{ kp.knowledgePoint }}({{ kp.wrongCount }})</span>
             </template>
           </el-table-column>
+          <el-table-column label="题目正确率" min-width="220">
+            <template #default="{ row }">
+              <span v-for="item in row.questionAccuracy" :key="item.questionId" class="chip">Q{{ item.questionId }} {{ item.accuracy }}%</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="班级统计" min-width="260">
+            <template #default="{ row }">
+              <span v-for="item in row.classStats" :key="item.classId || item.className" class="chip">{{ item.className }} 均{{ item.averageScore }} / 及格{{ item.passRate }}%</span>
+            </template>
+          </el-table-column>
         </el-table>
       </el-tab-pane>
 
@@ -149,6 +159,7 @@
           <el-table-column prop="eventType" label="事件" width="140" />
           <el-table-column prop="detail" label="详情" />
           <el-table-column prop="ip" label="IP" width="140" />
+          <el-table-column prop="userAgent" label="设备" min-width="220" show-overflow-tooltip />
           <el-table-column prop="createdAt" label="时间" width="180" />
         </el-table>
       </el-tab-pane>
@@ -296,6 +307,13 @@
                 <el-input-number v-model="aiPaperForm.judgeCount" :min="0" :max="50" /><span>判断</span>
                 <el-input-number v-model="aiPaperForm.shortCount" :min="0" :max="50" /><span>简答</span>
                 <el-input-number v-model="aiPaperForm.programCount" :min="0" :max="50" /><span>编程</span>
+              </div>
+            </el-form-item>
+            <el-form-item label="难度比例">
+              <div class="ratio-grid difficulty-grid">
+                <el-input-number v-model="aiPaperForm.easyCount" :min="0" :max="50" /><span>简单</span>
+                <el-input-number v-model="aiPaperForm.mediumCount" :min="0" :max="50" /><span>中等</span>
+                <el-input-number v-model="aiPaperForm.hardCount" :min="0" :max="50" /><span>困难</span>
               </div>
             </el-form-item>
             <el-form-item><el-button type="primary" :loading="aiPaperLoading" @click="generatePaper">生成试卷草稿</el-button></el-form-item>
@@ -625,7 +643,7 @@ function courseName(id) {
 }
 
 function typeName(type) {
-  return { SINGLE: '单选', MULTIPLE: '多选', JUDGE: '判断' }[type] || type
+  return { SINGLE: '单选', MULTIPLE: '多选', JUDGE: '判断', SHORT: '简答', PROGRAM: '编程' }[type] || type
 }
 
 function questionStem(id) {
@@ -736,9 +754,14 @@ watch(() => route.params.section, (section) => {
 
 .ratio-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(90px, 1fr));
+  grid-template-columns: minmax(140px, 1fr) 56px;
   gap: 8px;
   align-items: center;
+  max-width: 460px;
+}
+
+.difficulty-grid {
+  max-width: 360px;
 }
 
 .chip {
