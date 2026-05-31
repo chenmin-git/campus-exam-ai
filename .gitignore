@@ -1,0 +1,30 @@
+# OS / editor
+.DS_Store
+.idea/
+*.iml
+
+# Logs and local runtime files
+logs/
+*.log
+*.pid
+.playwright-mcp/
+
+# Java / Maven
+backend/target/
+
+# Node / Vite
+frontend/node_modules/
+frontend/dist/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+backend/src/main/resources/application-local.yml
+
+# Temporary screenshots generated during UI iteration
+dashboard-*.png
+login-*.png
+
+# Personal documents
+毕业设计（论文）任务书.docx

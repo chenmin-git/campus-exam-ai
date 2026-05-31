@@ -1,0 +1,117 @@
+{
+  "startedAt": "2026-05-30T16:47:01.182Z",
+  "api": {
+    "login:admin": true,
+    "login:teacher": true,
+    "login:student2": true,
+    "adminUsers": 8,
+    "adminPermissions": 22,
+    "questionImport": {
+      "imported": 0,
+      "skipped": 1,
+      "messages": [
+        "第 2 行题干重复，已跳过"
+      ]
+    },
+    "teacherAnalysis": 5,
+    "teacherMonitor": 2,
+    "teacherAppeals": 2,
+    "studentAdvice": 2,
+    "studentNotifications": 13
+  },
+  "screenshots": [
+    {
+      "name": "01-login",
+      "path": "tutorial-assets/01-login.png",
+      "url": "http://localhost:5176/login"
+    },
+    {
+      "name": "02-admin-users",
+      "path": "tutorial-assets/02-admin-users.png",
+      "url": "http://localhost:5176/admin/users"
+    },
+    {
+      "name": "03-admin-permissions",
+      "path": "tutorial-assets/03-admin-permissions.png",
+      "url": "http://localhost:5176/admin/permissions"
+    },
+    {
+      "name": "04-admin-logs-backup",
+      "path": "tutorial-assets/04-admin-logs-backup.png",
+      "url": "http://localhost:5176/admin/backup"
+    },
+    {
+      "name": "05-teacher-questions",
+      "path": "tutorial-assets/05-teacher-questions.png",
+      "url": "http://localhost:5176/teacher/questions"
+    },
+    {
+      "name": "06-teacher-papers",
+      "path": "tutorial-assets/06-teacher-papers.png",
+      "url": "http://localhost:5176/teacher/papers"
+    },
+    {
+      "name": "07-teacher-scores",
+      "path": "tutorial-assets/07-teacher-scores.png",
+      "url": "http://localhost:5176/teacher/scores"
+    },
+    {
+      "name": "08-teacher-manual",
+      "path": "tutorial-assets/08-teacher-manual.png",
+      "url": "http://localhost:5176/teacher/manual"
+    },
+    {
+      "name": "09-teacher-analysis",
+      "path": "tutorial-assets/09-teacher-analysis.png",
+      "url": "http://localhost:5176/teacher/analysis"
+    },
+    {
+      "name": "10-teacher-monitor",
+      "path": "tutorial-assets/10-teacher-monitor.png",
+      "url": "http://localhost:5176/teacher/monitor"
+    },
+    {
+      "name": "11-teacher-appeals",
+      "path": "tutorial-assets/11-teacher-appeals.png",
+      "url": "http://localhost:5176/teacher/appeals"
+    },
+    {
+      "name": "12-student-exams",
+      "path": "tutorial-assets/12-student-exams.png",
+      "url": "http://localhost:5176/student/exams"
+    },
+    {
+      "name": "13-student-attempts",
+      "path": "tutorial-assets/13-student-attempts.png",
+      "url": "http://localhost:5176/student/attempts"
+    },
+    {
+      "name": "14-student-wrong",
+      "path": "tutorial-assets/14-student-wrong.png",
+      "url": "http://localhost:5176/student/wrong"
+    },
+    {
+      "name": "15-student-advice",
+      "path": "tutorial-assets/15-student-advice.png",
+      "url": "http://localhost:5176/student/advice"
+    },
+    {
+      "name": "16-student-appeals",
+      "path": "tutorial-assets/16-student-appeals.png",
+      "url": "http://localhost:5176/student/appeals"
+    },
+    {
+      "name": "17-student-notifications",
+      "path": "tutorial-assets/17-student-notifications.png",
+      "url": "http://localhost:5176/student/notifications"
+    }
+  ],
+  "created": {
+    "backupId": 3,
+    "questionId": 16,
+    "paperId": 6,
+    "attemptId": 7,
+    "appealId": 2
+  },
+  "finishedAt": "2026-05-30T16:47:37.759Z"
+}
