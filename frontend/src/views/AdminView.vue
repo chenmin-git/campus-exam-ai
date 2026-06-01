@@ -151,7 +151,9 @@
           <el-button @click="loadLogs">刷新</el-button>
         </div>
         <el-table :data="logs" class="panel" stripe>
-          <el-table-column prop="createdAt" label="时间" width="180" />
+          <el-table-column label="时间" width="180">
+            <template #default="{ row }">{{ formatDateTime(row.createdAt) }}</template>
+          </el-table-column>
           <el-table-column prop="username" label="用户" width="140" />
           <el-table-column prop="role" label="角色" width="100" />
           <el-table-column prop="action" label="动作" width="140" />
@@ -167,9 +169,13 @@
         </div>
         <el-table :data="backups" class="panel" stripe>
           <el-table-column prop="name" label="名称" width="260" />
-          <el-table-column prop="status" label="状态" width="100" />
+          <el-table-column label="状态" width="100">
+            <template #default="{ row }">{{ backupStatusName(row.status) }}</template>
+          </el-table-column>
           <el-table-column prop="remark" label="备注" />
-          <el-table-column prop="createdAt" label="时间" width="180" />
+          <el-table-column label="时间" width="180">
+            <template #default="{ row }">{{ formatDateTime(row.createdAt) }}</template>
+          </el-table-column>
           <el-table-column label="操作" width="120">
             <template #default="{ row }">
               <el-button link type="primary" @click="restoreBackup(row)">恢复</el-button>
@@ -242,7 +248,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import http from '../api/http'
-import { createPager, exportXls, usePagedRows } from '../utils/tableTools'
+import { backupStatusName, createPager, exportXls, formatDateTime, usePagedRows } from '../utils/tableTools'
 
 const route = useRoute()
 const active = ref(route.params.section || 'users')

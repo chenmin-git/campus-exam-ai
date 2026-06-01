@@ -27,7 +27,9 @@
           <el-table-column prop="id" label="ID" width="70" />
           <el-table-column label="课程" width="150"><template #default="{ row }">{{ courseName(row.courseId) }}</template></el-table-column>
           <el-table-column prop="type" label="题型" width="100"><template #default="{ row }"><el-tag>{{ typeName(row.type) }}</el-tag></template></el-table-column>
-          <el-table-column prop="stem" label="题干" min-width="320" show-overflow-tooltip />
+          <el-table-column label="题干" min-width="320" show-overflow-tooltip>
+            <template #default="{ row }">{{ cleanGeneratedSuffix(row.stem) }}</template>
+          </el-table-column>
           <el-table-column prop="correctAnswer" label="答案" width="120" />
           <el-table-column prop="knowledgePoint" label="知识点" width="160" show-overflow-tooltip />
           <el-table-column prop="reviewStatus" label="审核" width="100"><template #default="{ row }"><el-tag :type="row.reviewStatus === 'APPROVED' ? 'success' : row.reviewStatus === 'REJECTED' ? 'danger' : 'info'">{{ reviewStatusName(row.reviewStatus) }}</el-tag></template></el-table-column>
@@ -53,7 +55,9 @@
           </div>
         </div>
         <el-table :data="pagedPapers" class="panel" stripe>
-          <el-table-column prop="title" label="试卷" min-width="220" />
+          <el-table-column label="试卷" min-width="220">
+            <template #default="{ row }">{{ cleanGeneratedSuffix(row.title) }}</template>
+          </el-table-column>
           <el-table-column label="课程" width="150"><template #default="{ row }">{{ courseName(row.courseId) }}</template></el-table-column>
           <el-table-column prop="durationMinutes" label="时长" width="100" />
           <el-table-column prop="totalScore" label="总分" width="100" />
@@ -75,16 +79,24 @@
           <div><el-button @click="exportScores">导出xls</el-button><el-button @click="load">刷新</el-button></div>
         </div>
         <el-table :data="pagedScores" class="panel" stripe>
-          <el-table-column prop="paperTitle" label="试卷" min-width="220" />
+          <el-table-column label="试卷" min-width="220">
+            <template #default="{ row }">{{ cleanGeneratedSuffix(row.paperTitle) }}</template>
+          </el-table-column>
           <el-table-column prop="studentName" label="学生" width="140" />
           <el-table-column prop="score" label="成绩" width="100">
             <template #default="{ row }"><strong>{{ row.score }}</strong></template>
           </el-table-column>
           <el-table-column prop="objectiveScore" label="客观题" width="100" />
           <el-table-column prop="subjectiveScore" label="主观题" width="100" />
-          <el-table-column prop="status" label="状态" width="120" />
-          <el-table-column prop="reviewStatus" label="复核" width="100" />
-          <el-table-column prop="submittedAt" label="提交时间" width="190" />
+          <el-table-column label="状态" width="120">
+            <template #default="{ row }">{{ examStatusName(row.status) }}</template>
+          </el-table-column>
+          <el-table-column label="复核" width="100">
+            <template #default="{ row }">{{ formatReviewStatusName(row.reviewStatus) }}</template>
+          </el-table-column>
+          <el-table-column label="提交时间" width="190">
+            <template #default="{ row }">{{ formatDateTime(row.submittedAt, '') }}</template>
+          </el-table-column>
         </el-table>
         <div class="table-actions"><el-pagination v-model:current-page="pagers.scores.page" v-model:page-size="pagers.scores.size" :total="filteredScores.length" :page-sizes="[5,8,12,20]" layout="total, sizes, prev, pager, next" /></div>
       </el-tab-pane>
@@ -96,7 +108,7 @@
         </div>
         <el-table :data="manualRows" class="panel" stripe>
           <el-table-column prop="paperId" label="试卷ID" width="90" />
-          <el-table-column label="题目"><template #default="{ row }">{{ row.question.stem }}</template></el-table-column>
+          <el-table-column label="题目"><template #default="{ row }">{{ cleanGeneratedSuffix(row.question.stem) }}</template></el-table-column>
           <el-table-column label="学生答案" width="220"><template #default="{ row }">{{ row.studentAnswer || '未作答' }}</template></el-table-column>
           <el-table-column label="得分" width="120">
             <template #default="{ row }">
@@ -122,7 +134,9 @@
           <el-button @click="loadAnalysis">刷新</el-button>
         </div>
         <el-table :data="analysisRows" class="panel" stripe>
-          <el-table-column prop="paperTitle" label="试卷" min-width="220" />
+          <el-table-column label="试卷" min-width="220">
+            <template #default="{ row }">{{ cleanGeneratedSuffix(row.paperTitle) }}</template>
+          </el-table-column>
           <el-table-column prop="count" label="人数" width="90" />
           <el-table-column prop="averageScore" label="均分" width="90" />
           <el-table-column prop="maxScore" label="最高" width="90" />
@@ -160,7 +174,9 @@
           <el-table-column prop="detail" label="详情" />
           <el-table-column prop="ip" label="IP" width="140" />
           <el-table-column prop="userAgent" label="设备" min-width="220" show-overflow-tooltip />
-          <el-table-column prop="createdAt" label="时间" width="180" />
+          <el-table-column label="时间" width="180">
+            <template #default="{ row }">{{ formatDateTime(row.createdAt) }}</template>
+          </el-table-column>
         </el-table>
       </el-tab-pane>
 
@@ -174,7 +190,9 @@
           <el-table-column prop="attemptId" label="考试记录" width="100" />
           <el-table-column prop="studentId" label="学生ID" width="90" />
           <el-table-column prop="reason" label="原因" />
-          <el-table-column prop="status" label="状态" width="100" />
+          <el-table-column label="状态" width="100">
+            <template #default="{ row }">{{ appealStatusName(row.status) }}</template>
+          </el-table-column>
           <el-table-column prop="reply" label="回复" />
           <el-table-column label="操作" width="120">
             <template #default="{ row }">
@@ -349,7 +367,16 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import http from '../api/http'
-import { createPager, exportXls, usePagedRows } from '../utils/tableTools'
+import {
+  appealStatusName,
+  cleanGeneratedSuffix,
+  createPager,
+  examStatusName,
+  exportXls,
+  formatDateTime,
+  reviewStatusName as formatReviewStatusName,
+  usePagedRows
+} from '../utils/tableTools'
 
 const route = useRoute()
 const active = ref(route.params.section || 'questions')
@@ -647,7 +674,7 @@ function typeName(type) {
 }
 
 function questionStem(id) {
-  return questions.value.find((q) => q.id === id)?.stem || `题目 ${id}`
+  return cleanGeneratedSuffix(questions.value.find((q) => q.id === id)?.stem || `题目 ${id}`)
 }
 
 function isObjective(type) {
@@ -655,7 +682,7 @@ function isObjective(type) {
 }
 
 function reviewStatusName(status) {
-  return { APPROVED: '通过', DRAFT: '草稿', REJECTED: '驳回' }[status] || status || '草稿'
+  return formatReviewStatusName(status)
 }
 
 function exportQuestions() {
@@ -663,7 +690,7 @@ function exportQuestions() {
     { label: 'ID', prop: 'id' },
     { label: '课程', formatter: (row) => courseName(row.courseId) },
     { label: '题型', formatter: (row) => typeName(row.type) },
-    { label: '题干', prop: 'stem' },
+    { label: '题干', formatter: (row) => cleanGeneratedSuffix(row.stem) },
     { label: '答案', prop: 'correctAnswer' },
     { label: '难度', prop: 'difficulty' }
   ])
@@ -671,7 +698,7 @@ function exportQuestions() {
 
 function exportPapers() {
   exportXls('试卷管理', papers.value, [
-    { label: '试卷', prop: 'title' },
+    { label: '试卷', formatter: (row) => cleanGeneratedSuffix(row.title) },
     { label: '课程', formatter: (row) => courseName(row.courseId) },
     { label: '时长', prop: 'durationMinutes' },
     { label: '总分', prop: 'totalScore' },
@@ -681,11 +708,11 @@ function exportPapers() {
 
 function exportScores() {
   exportXls('成绩管理', filteredScores.value, [
-    { label: '试卷', prop: 'paperTitle' },
+    { label: '试卷', formatter: (row) => cleanGeneratedSuffix(row.paperTitle) },
     { label: '学生', prop: 'studentName' },
     { label: '成绩', prop: 'score' },
-    { label: '状态', prop: 'status' },
-    { label: '提交时间', prop: 'submittedAt' }
+    { label: '状态', formatter: (row) => examStatusName(row.status) },
+    { label: '提交时间', formatter: (row) => formatDateTime(row.submittedAt, '') }
   ])
 }
 

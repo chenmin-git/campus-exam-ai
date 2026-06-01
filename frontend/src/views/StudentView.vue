@@ -13,11 +13,19 @@
         <div class="grid">
           <div v-for="paper in papers" :key="paper.id" class="panel exam-card">
             <div class="paper-head">
-              <h3>{{ paper.title }}</h3>
+              <h3>{{ cleanGeneratedSuffix(paper.title) }}</h3>
               <el-tag :type="attemptedPaperIds.includes(paper.id) ? 'info' : 'success'">{{ attemptedPaperIds.includes(paper.id) ? '已参加' : '可考试' }}</el-tag>
             </div>
-            <p class="muted">时长 {{ paper.durationMinutes }} 分钟 · 总分 {{ paper.totalScore }} · 课程ID {{ paper.courseId }}</p>
-            <p class="muted">开始 {{ paper.startTime || '不限' }} · 结束 {{ paper.endTime || '不限' }} · {{ paper.allowRetake ? '允许重考' : '禁止重考' }}</p>
+            <div class="exam-meta">
+              <span>时长 {{ paper.durationMinutes }} 分钟</span>
+              <span>总分 {{ paper.totalScore }}</span>
+              <span>课程ID {{ paper.courseId }}</span>
+            </div>
+            <div class="exam-time">
+              <span>开始 {{ formatDateTimeMinute(paper.startTime, '不限') }}</span>
+              <span>结束 {{ formatDateTimeMinute(paper.endTime, '不限') }}</span>
+              <strong>{{ paper.allowRetake ? '允许重考' : '禁止重考' }}</strong>
+            </div>
             <el-button type="primary" @click="confirmStart(paper)">开始考试</el-button>
           </div>
         </div>
@@ -25,7 +33,7 @@
         <div v-if="current" class="panel exam">
           <div class="toolbar">
             <div>
-              <h2 class="section-title">{{ current.paper.title }}</h2>
+              <h2 class="section-title">{{ cleanGeneratedSuffix(current.paper.title) }}</h2>
               <div class="muted">已作答 {{ answeredCount }} / {{ current.questions.length }}</div>
             </div>
             <div class="exam-head-actions">
@@ -34,7 +42,7 @@
             </div>
           </div>
           <div v-for="(q, index) in current.questions" :key="q.id" class="question">
-            <h3>{{ index + 1 }}. {{ q.stem }}（{{ q.score }}分）</h3>
+            <h3>{{ index + 1 }}. {{ cleanGeneratedSuffix(q.stem) }}（{{ q.score }}分）</h3>
             <el-checkbox-group v-if="q.type === 'MULTIPLE'" v-model="answers[q.id]">
               <el-checkbox v-for="op in q.options" :key="op.id" :value="op.optionKey">{{ op.optionKey }}. {{ op.optionText }}</el-checkbox>
             </el-checkbox-group>
@@ -58,9 +66,15 @@
         <el-table :data="pagedAttempts" class="panel" stripe>
           <el-table-column prop="paperId" label="试卷ID" width="100" />
           <el-table-column prop="score" label="成绩" width="100"><template #default="{ row }"><strong>{{ row.score }}</strong></template></el-table-column>
-          <el-table-column prop="status" label="状态" width="130" />
-          <el-table-column prop="startedAt" label="开始时间" />
-          <el-table-column prop="submittedAt" label="提交时间" />
+          <el-table-column label="状态" width="130">
+            <template #default="{ row }">{{ examStatusName(row.status) }}</template>
+          </el-table-column>
+          <el-table-column label="开始时间" min-width="170">
+            <template #default="{ row }">{{ formatDateTime(row.startedAt) }}</template>
+          </el-table-column>
+          <el-table-column label="提交时间" min-width="170">
+            <template #default="{ row }">{{ formatDateTime(row.submittedAt, '') }}</template>
+          </el-table-column>
         </el-table>
         <div class="table-actions"><el-pagination v-model:current-page="attemptPager.page" v-model:page-size="attemptPager.size" :total="attempts.length" :page-sizes="[5,8,12,20]" layout="total, sizes, prev, pager, next" /></div>
       </el-tab-pane>
@@ -69,10 +83,13 @@
         <el-empty v-if="wrongQuestions.length === 0" description="暂无错题记录" />
         <div v-for="item in wrongQuestions" :key="item.attemptId + '-' + item.question.id" class="panel wrong">
           <div class="toolbar">
-            <h3>{{ item.question.stem }}</h3>
+            <h3>{{ cleanGeneratedSuffix(item.question.stem) }}</h3>
             <el-tag>{{ typeName(item.question.type) }}</el-tag>
           </div>
-          <p class="muted">你的答案：{{ item.studentAnswer || '未作答' }}；正确答案：{{ item.question.correctAnswer }}</p>
+          <div class="answer-line">
+            <span>你的答案：{{ item.studentAnswer || '未作答' }}</span>
+            <span>正确答案：{{ item.question.correctAnswer }}</span>
+          </div>
           <el-descriptions border :column="1">
             <el-descriptions-item label="原始解析">{{ item.question.analysis || '暂无人工解析' }}</el-descriptions-item>
           </el-descriptions>
@@ -114,7 +131,9 @@
         <el-table :data="appealRows" class="panel" stripe>
           <el-table-column prop="attemptId" label="考试记录" width="100" />
           <el-table-column prop="reason" label="原因" />
-          <el-table-column prop="status" label="状态" width="100" />
+          <el-table-column label="状态" width="100">
+            <template #default="{ row }">{{ appealStatusName(row.status) }}</template>
+          </el-table-column>
           <el-table-column prop="reply" label="回复" />
         </el-table>
       </el-tab-pane>
@@ -168,7 +187,7 @@ import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import http from '../api/http'
-import { createPager, exportXls, usePagedRows } from '../utils/tableTools'
+import { appealStatusName, cleanGeneratedSuffix, createPager, examStatusName, exportXls, formatDateTime, formatDateTimeMinute, usePagedRows } from '../utils/tableTools'
 
 const route = useRoute()
 const router = useRouter()
@@ -347,9 +366,9 @@ function exportAttempts() {
   exportXls('历史成绩', attempts.value, [
     { label: '试卷ID', prop: 'paperId' },
     { label: '成绩', prop: 'score' },
-    { label: '状态', prop: 'status' },
-    { label: '开始时间', prop: 'startedAt' },
-    { label: '提交时间', prop: 'submittedAt' }
+    { label: '状态', formatter: (row) => examStatusName(row.status) },
+    { label: '开始时间', formatter: (row) => formatDateTime(row.startedAt) },
+    { label: '提交时间', formatter: (row) => formatDateTime(row.submittedAt, '') }
   ])
 }
 
@@ -397,6 +416,8 @@ onUnmounted(() => {
 .wrong h3 {
   margin: 0;
   font-size: 17px;
+  line-height: 1.42;
+  word-break: break-word;
 }
 
 .paper-head {
@@ -406,9 +427,92 @@ onUnmounted(() => {
   gap: 12px;
 }
 
+.paper-head h3 {
+  flex: 1;
+  min-width: 0;
+}
+
+.paper-head .el-tag {
+  flex: 0 0 auto;
+}
+
+.exam-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 248px;
+}
+
+.exam-card .el-button {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.exam-meta,
+.exam-time {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.exam-meta {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.exam-meta span,
+.exam-time span,
+.exam-time strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.exam-time {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f8fbff;
+}
+
+.exam-time strong {
+  color: #155a78;
+  font-weight: 800;
+}
+
 .exam,
 .wrong {
   margin-top: 16px;
+}
+
+.wrong .toolbar {
+  align-items: flex-start;
+}
+
+.wrong .toolbar h3 {
+  flex: 1;
+  min-width: 0;
+}
+
+.answer-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 12px 0;
+  color: var(--muted);
+}
+
+.answer-line span {
+  min-width: min(100%, 260px);
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f8fbff;
+  border: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+
+.wrong :deep(.el-descriptions__label) {
+  width: 112px;
+  white-space: nowrap;
 }
 
 .question {
@@ -476,5 +580,11 @@ pre {
   margin: 8px 0 0;
   color: var(--muted);
   line-height: 1.6;
+}
+
+@media (max-width: 720px) {
+  .exam-meta {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

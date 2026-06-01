@@ -76,7 +76,7 @@ async function runApiSmoke() {
     question: {
       courseId: 1,
       type: 'SHORT',
-      stem: `教程测试主观题 ${Date.now()}`,
+      stem: '教程测试主观题',
       correctAnswer: '',
       analysis: '从核心概念、使用场景和注意事项三个角度作答。',
       difficulty: 2,
@@ -91,7 +91,7 @@ async function runApiSmoke() {
   const paperPayload = {
     paper: {
       courseId: 1,
-      title: `教程测试主观题试卷 ${Date.now()}`,
+      title: '教程测试主观题试卷',
       durationMinutes: 30,
       published: 1,
       allowRetake: 1,
