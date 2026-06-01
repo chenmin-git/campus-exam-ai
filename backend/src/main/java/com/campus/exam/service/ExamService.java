@@ -349,9 +349,7 @@ public class ExamService {
     }
 
     public List<Map<String, Object>> analysisReport(User current) {
-        Set<Long> paperIds = paperMapper.selectList(new LambdaQueryWrapper<Paper>()
-                        .eq(Paper::getCreatorId, current.getId()))
-                .stream().map(Paper::getId).collect(Collectors.toSet());
+        Set<Long> paperIds = visiblePaperIds(current);
         if (paperIds.isEmpty()) {
             return List.of();
         }
@@ -378,9 +376,7 @@ public class ExamService {
     }
 
     public List<Map<String, Object>> monitorEvents(User current) {
-        Set<Long> paperIds = paperMapper.selectList(new LambdaQueryWrapper<Paper>()
-                        .eq(Paper::getCreatorId, current.getId()))
-                .stream().map(Paper::getId).collect(Collectors.toSet());
+        Set<Long> paperIds = visiblePaperIds(current);
         if (paperIds.isEmpty()) {
             return List.of();
         }
@@ -610,6 +606,31 @@ public class ExamService {
 
     private double passLine(Paper paper) {
         return paper == null || paper.getTotalScore() == null ? 60 : paper.getTotalScore() * 0.6;
+    }
+
+    private Set<Long> visiblePaperIds(User current) {
+        LambdaQueryWrapper<Paper> wrapper = new LambdaQueryWrapper<Paper>().orderByDesc(Paper::getId);
+        if ("ADMIN".equals(current.getRole())) {
+            return paperMapper.selectList(wrapper).stream()
+                    .map(Paper::getId)
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+        }
+        if ("TEACHER".equals(current.getRole())) {
+            Set<Long> courseIds = teacherCourseMapper.selectList(new LambdaQueryWrapper<TeacherCourse>()
+                            .eq(TeacherCourse::getTeacherId, current.getId()))
+                    .stream()
+                    .map(TeacherCourse::getCourseId)
+                    .collect(Collectors.toSet());
+            if (courseIds.isEmpty()) {
+                wrapper.eq(Paper::getCreatorId, current.getId());
+            } else {
+                wrapper.and(w -> w.eq(Paper::getCreatorId, current.getId()).or().in(Paper::getCourseId, courseIds));
+            }
+            return paperMapper.selectList(wrapper).stream()
+                    .map(Paper::getId)
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+        }
+        return Set.of();
     }
 
     private String monitorEventName(String eventType) {

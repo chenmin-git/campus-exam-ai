@@ -148,6 +148,25 @@ export function operationDetailName(detail) {
         : roleName(text)
 }
 
+export function systemTextName(value) {
+  if (value == null) return ''
+  const text = cleanGeneratedSuffix(String(value))
+  return text
+    .replaceAll('VISIBILITY_CHANGE', monitorEventName('VISIBILITY_CHANGE'))
+    .replaceAll('FULLSCREEN_ENTER', monitorEventName('FULLSCREEN_ENTER'))
+    .replaceAll('FULLSCREEN_EXIT', monitorEventName('FULLSCREEN_EXIT'))
+    .replaceAll('FULLSCREEN_FAIL', monitorEventName('FULLSCREEN_FAIL'))
+    .replaceAll('PENDING_REVIEW', examStatusName('PENDING_REVIEW'))
+    .replaceAll('IN_PROGRESS', examStatusName('IN_PROGRESS'))
+    .replaceAll('SUBMITTED', examStatusName('SUBMITTED'))
+    .replaceAll('TIMEOUT', monitorEventName('TIMEOUT'))
+    .replaceAll('SUBMIT', monitorEventName('SUBMIT'))
+    .replaceAll('START', monitorEventName('START'))
+    .replaceAll('BLUR', monitorEventName('BLUR'))
+    .replaceAll('APPROVED', appealStatusName('APPROVED'))
+    .replaceAll('REJECTED', appealStatusName('REJECTED'))
+}
+
 export function cleanGeneratedSuffix(value) {
   if (value == null) return ''
   return String(value).replace(/\s+\d{10,14}(?=$|[-—])/g, '')

@@ -168,8 +168,12 @@
           <el-button @click="loadNotifications">刷新</el-button>
         </div>
         <el-table :data="notifications" class="panel" stripe>
-          <el-table-column prop="title" label="标题" width="180" />
-          <el-table-column prop="content" label="内容" />
+          <el-table-column label="标题" width="180">
+            <template #default="{ row }">{{ systemTextName(row.title) }}</template>
+          </el-table-column>
+          <el-table-column label="内容">
+            <template #default="{ row }">{{ systemTextName(row.content) }}</template>
+          </el-table-column>
           <el-table-column prop="readFlag" label="状态" width="90">
             <template #default="{ row }"><el-tag :type="row.readFlag ? 'info' : 'success'">{{ row.readFlag ? '已读' : '未读' }}</el-tag></template>
           </el-table-column>
@@ -211,7 +215,7 @@ import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import http from '../api/http'
-import { appealStatusName, cleanGeneratedSuffix, createPager, examStatusName, exportXls, formatDateTime, formatDateTimeMinute, usePagedRows } from '../utils/tableTools'
+import { appealStatusName, cleanGeneratedSuffix, createPager, examStatusName, exportXls, formatDateTime, formatDateTimeMinute, systemTextName, usePagedRows } from '../utils/tableTools'
 
 const route = useRoute()
 const router = useRouter()

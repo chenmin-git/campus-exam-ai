@@ -100,8 +100,12 @@
           <div><el-button @click="exportAnnouncements">导出xls</el-button><el-button type="primary" @click="openAnnouncement()">发布公告</el-button></div>
         </div>
         <el-table :data="pagedAnnouncements" class="panel" stripe>
-          <el-table-column prop="title" label="标题" width="220" />
-          <el-table-column prop="content" label="内容" />
+          <el-table-column label="标题" width="220">
+            <template #default="{ row }">{{ systemTextName(row.title) }}</template>
+          </el-table-column>
+          <el-table-column label="内容">
+            <template #default="{ row }">{{ systemTextName(row.content) }}</template>
+          </el-table-column>
           <el-table-column prop="enabled" label="状态" width="90">
             <template #default="{ row }">
               <el-tag :type="row.enabled ? 'success' : 'info'">{{ row.enabled ? '显示' : '隐藏' }}</el-tag>
@@ -254,7 +258,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import http from '../api/http'
-import { backupStatusName, createPager, exportXls, formatDateTime, operationDetailName, operationTargetName, usePagedRows } from '../utils/tableTools'
+import { backupStatusName, createPager, exportXls, formatDateTime, operationDetailName, operationTargetName, systemTextName, usePagedRows } from '../utils/tableTools'
 
 const route = useRoute()
 const active = ref(route.params.section || 'users')
@@ -465,8 +469,8 @@ function exportTeacherCourses() {
 
 function exportAnnouncements() {
   exportXls('公告管理', filteredAnnouncements.value, [
-    { label: '标题', prop: 'title' },
-    { label: '内容', prop: 'content' },
+    { label: '标题', formatter: (row) => systemTextName(row.title) },
+    { label: '内容', formatter: (row) => systemTextName(row.content) },
     { label: '状态', formatter: (row) => row.enabled ? '显示' : '隐藏' }
   ])
 }

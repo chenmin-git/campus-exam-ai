@@ -219,8 +219,12 @@
         <el-button @click="exportAnnouncements">导出xls</el-button>
       </div>
       <el-table :data="pagedAnnouncements" size="small">
-        <el-table-column prop="title" label="标题" width="180" />
-        <el-table-column prop="content" label="内容" show-overflow-tooltip />
+        <el-table-column label="标题" width="180">
+          <template #default="{ row }">{{ systemTextName(row.title) }}</template>
+        </el-table-column>
+        <el-table-column label="内容" show-overflow-tooltip>
+          <template #default="{ row }">{{ systemTextName(row.content) }}</template>
+        </el-table-column>
       </el-table>
       <div class="table-actions">
         <el-pagination v-model:current-page="announcementPager.page" v-model:page-size="announcementPager.size" :total="announcements.length" :page-sizes="[5,8,12]" layout="total, prev, pager, next" />
@@ -247,7 +251,7 @@ import {
 } from '@element-plus/icons-vue'
 import http from '../api/http'
 import { useAuthStore } from '../stores/auth'
-import { createPager, exportXls, usePagedRows } from '../utils/tableTools'
+import { createPager, exportXls, systemTextName, usePagedRows } from '../utils/tableTools'
 
 const auth = useAuthStore()
 const announcements = ref([])
@@ -388,8 +392,8 @@ async function load() {
 
 function exportAnnouncements() {
   exportXls('工作台公告', announcements.value, [
-    { label: '标题', prop: 'title' },
-    { label: '内容', prop: 'content' }
+    { label: '标题', formatter: (row) => systemTextName(row.title) },
+    { label: '内容', formatter: (row) => systemTextName(row.content) }
   ])
 }
 
