@@ -11,7 +11,7 @@
 - 学生：在线考试、倒计时、主观题作答、自动阅卷、历史成绩、AI 错题解析、AI 学习建议、成绩申诉、通知中心。
 - 考试控制：考试开始/结束时间、防重复考试、允许/禁止重考、超时自动提交、切屏/失焦监控。
 - AI 能力：AI 出题、AI 组卷、AI 错题解析、AI 个性化复习建议，接口失败时提供本地兜底。
-- 开源友好：内置初始化 SQL、升级 SQL、完整教程、截图素材、贡献指南和安全说明。
+- 开源友好：内置完整初始化 SQL、完整教程、截图素材、贡献指南和安全说明。
 
 完整功能说明见：[docs/功能清单.md](docs/功能清单.md)  
 系统使用教程见：[教程.html](教程.html)
@@ -34,6 +34,8 @@
 | 前端 | Vue 3、Vite、Pinia、Vue Router、Element Plus |
 | AI | 讯飞星火 Chat Completions API |
 | 文档 | HTML 教程、Markdown 功能清单、自动化截图 |
+
+讯飞星火 API 申请与接口信息：<https://xinghuo.xfyun.cn/sparkapi?ch=xhapi-bytg-jh26&bd_vid=7803253300065052415>
 
 ## 目录结构
 
@@ -84,6 +86,8 @@ cp backend/src/main/resources/application-example.yml backend/src/main/resources
 ```
 
 `application-local.yml` 已加入 `.gitignore`，请不要提交真实密钥。
+
+讯飞星火 API 控制台地址：<https://xinghuo.xfyun.cn/sparkapi?ch=xhapi-bytg-jh26&bd_vid=7803253300065052415>
 
 ### 3. 启动后端
 
