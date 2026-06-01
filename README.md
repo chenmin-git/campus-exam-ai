@@ -47,8 +47,7 @@ backend/                         Spring Boot 后端
 frontend/                        Vue 3 前端
   src/views/                     管理员、教师、学生、工作台页面
 sql/
-  campus_exam_ai.sql             初始化数据库脚本
-  upgrade_feature_pack.sql       旧库升级脚本
+  campus_exam_ai.sql             完整数据库初始化脚本
 docs/
   功能清单.md                    功能模块清单
   tutorial-assets/               教程截图、测试报告、Excel 模板
@@ -65,11 +64,7 @@ scripts/
 mysql -uroot -proot < sql/campus_exam_ai.sql
 ```
 
-已有旧数据库时，执行升级脚本：
-
-```bash
-mysql -uroot -proot < sql/upgrade_feature_pack.sql
-```
+该脚本会重建 `campus_exam_ai` 数据库并写入演示数据；已有数据时请先备份。
 
 ### 2. 配置后端
 

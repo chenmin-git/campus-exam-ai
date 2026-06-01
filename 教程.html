@@ -608,8 +608,7 @@ frontend/
   src/router/index.js          路由和前端权限守卫
 
 sql/
-  campus_exam_ai.sql           初始化数据库脚本
-  upgrade_feature_pack.sql     非破坏性升级脚本
+  campus_exam_ai.sql           完整数据库初始化脚本
 
 docs/tutorial-assets/          教程截图、测试报告、导入模板</code></pre>
       </div>
@@ -652,7 +651,7 @@ docs/tutorial-assets/          教程截图、测试报告、导入模板</code>
           <span class="tag">operation_log</span>
           <span class="tag">backup_record</span>
         </p>
-        <p>新环境可以直接执行 <code>sql/campus_exam_ai.sql</code> 初始化；已有旧库可以执行 <code>sql/upgrade_feature_pack.sql</code> 升级。</p>
+        <p>新环境可以直接执行 <code>sql/campus_exam_ai.sql</code> 初始化；该脚本会重建 <code>campus_exam_ai</code> 数据库并写入演示数据，已有数据请先备份。</p>
       </div>
     </section>
   </main>

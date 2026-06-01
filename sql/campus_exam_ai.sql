@@ -1,3 +1,7 @@
+-- Campus Exam AI complete database initialization script.
+-- This script recreates the campus_exam_ai database and seeds demo data.
+-- Run with: mysql -uroot -proot < sql/campus_exam_ai.sql
+
 DROP DATABASE IF EXISTS campus_exam_ai;
 CREATE DATABASE campus_exam_ai DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE campus_exam_ai;
