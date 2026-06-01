@@ -1,0 +1,331 @@
+[
+  {
+    "text": "校园智能在线考试系统完整功能演示，覆盖新增、修改、考试、阅卷、分析和通知全流程。",
+    "startMs": 0,
+    "endMs": 3000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "功能模块图先展示管理员、教师、学生三端能力，方便快速理解系统边界。",
+    "startMs": 3000,
+    "endMs": 7000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "系统框架图展示 Vue 前端、Spring Boot 后端、MySQL 数据库和讯飞星火 AI 服务的协作关系。",
+    "startMs": 7000,
+    "endMs": 11000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "系统提供管理员、教师、学生三类入口，方便演示完整业务闭环。",
+    "startMs": 11000,
+    "endMs": 14000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "管理员工作台汇总用户、课程、题库、试卷和考试运行数据。",
+    "startMs": 14000,
+    "endMs": 17000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "用户管理支持查看账号、角色、联系方式和启用状态。",
+    "startMs": 17000,
+    "endMs": 20000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "新增用户时可以设置角色、班级、联系方式和初始密码。",
+    "startMs": 20000,
+    "endMs": 23000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "编辑用户可修改姓名、电话、邮箱、角色和启用状态。",
+    "startMs": 23000,
+    "endMs": 26000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "班级管理维护学生所属班级、年级和专业信息。",
+    "startMs": 26000,
+    "endMs": 29000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "管理员可以新增班级，为学生和授课安排提供基础数据。",
+    "startMs": 29000,
+    "endMs": 32000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "课程管理维护课程编号、课程名称和课程简介。",
+    "startMs": 32000,
+    "endMs": 35000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "新增课程后，教师题库和试卷可以按课程归类。",
+    "startMs": 35000,
+    "endMs": 38000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "课程信息支持编辑保存，操作会进入系统日志。",
+    "startMs": 38000,
+    "endMs": 41000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "授课安排把教师、课程和班级绑定起来，决定学生可参加的考试范围。",
+    "startMs": 41000,
+    "endMs": 44000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "新增授课安排后，相关班级学生可以看到对应课程试卷。",
+    "startMs": 44000,
+    "endMs": 47000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "公告会展示在工作台，用于考试安排和系统通知。",
+    "startMs": 47000,
+    "endMs": 50000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "管理员可以发布公告，控制公告是否显示。",
+    "startMs": 50000,
+    "endMs": 53000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "权限管理按角色勾选功能菜单，用户重新登录后生效。",
+    "startMs": 53000,
+    "endMs": 56000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "关键操作会记录到日志，便于追踪管理员、教师和学生行为。",
+    "startMs": 56000,
+    "endMs": 59000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "备份恢复页面记录逻辑备份和恢复状态，适合演示数据管理。",
+    "startMs": 59000,
+    "endMs": 62000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "教师工作台突出待人工阅卷、待处理申诉和授课班级覆盖。",
+    "startMs": 62000,
+    "endMs": 65000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "题库覆盖客观题、简答题和编程题，并支持审核状态维护。",
+    "startMs": 65000,
+    "endMs": 68000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "新增题目时可以选择题型、难度、知识点和解析。",
+    "startMs": 68000,
+    "endMs": 71000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "教师可编辑题干、选项、答案、解析和审核状态。",
+    "startMs": 71000,
+    "endMs": 74000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "AI 出题按课程、知识点、题型、数量和难度生成题目草稿。",
+    "startMs": 74000,
+    "endMs": 77000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "题库查重用于发现重复题干，提升题库维护质量。",
+    "startMs": 77000,
+    "endMs": 80000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "试卷列表展示时长、总分、发布状态和是否允许重考。",
+    "startMs": 80000,
+    "endMs": 83000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "手动组卷可勾选题目、设置分值、配置考试时间和重考规则。",
+    "startMs": 83000,
+    "endMs": 86000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "教师可以编辑试卷名称、时长、发布状态和题目分值。",
+    "startMs": 86000,
+    "endMs": 89000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "AI 组卷支持题型比例、难度比例和知识点覆盖约束。",
+    "startMs": 89000,
+    "endMs": 92000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "成绩管理汇总学生提交、客观题得分、主观题得分和复核状态。",
+    "startMs": 92000,
+    "endMs": 95000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "人工阅卷可录入主观题分数和教师批注，并重新计算总分。",
+    "startMs": 95000,
+    "endMs": 98000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "成绩分析展示班级统计、题目正确率、及格率和薄弱知识点。",
+    "startMs": 98000,
+    "endMs": 101000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "监控页面记录切屏、失焦、全屏异常、IP 和设备信息。",
+    "startMs": 101000,
+    "endMs": 104000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "教师可以处理学生成绩复查申请，并记录处理结果。",
+    "startMs": 104000,
+    "endMs": 107000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "学生工作台展示可参加考试、历史表现、待复盘错题和薄弱知识点。",
+    "startMs": 107000,
+    "endMs": 110000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "在线考试列表按班级和课程展示当前可参加试卷。",
+    "startMs": 110000,
+    "endMs": 113000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "进入考试后展示倒计时、答题进度、全屏按钮和题目作答区。",
+    "startMs": 113000,
+    "endMs": 116000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "学生可以完成客观题选择和主观题输入，提交后进入评分流程。",
+    "startMs": 116000,
+    "endMs": 119000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "历史成绩保存每次考试记录，方便学生回看得分和提交状态。",
+    "startMs": 119000,
+    "endMs": 122000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "错题解析展示学生答案、正确答案和原始解析。",
+    "startMs": 122000,
+    "endMs": 125000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "学生可以生成 AI 错题解析，理解错因并获得复习建议。",
+    "startMs": 125000,
+    "endMs": 128000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "学习建议根据错题知识点自动生成复习清单和练习方向。",
+    "startMs": 128000,
+    "endMs": 131000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "学生可以对成绩提出复查申请，并查看教师处理回复。",
+    "startMs": 131000,
+    "endMs": 134000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "通知中心集中展示考试、复核和系统消息，并支持标记已读。",
+    "startMs": 134000,
+    "endMs": 137000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "个人中心支持修改基本资料和更新密码。",
+    "startMs": 137000,
+    "endMs": 140000,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "演示完成：项目已包含完整 SQL、教程截图、自动化测试报告和 Remotion 视频工程。",
+    "startMs": 140000,
+    "endMs": 144000,
+    "timestampMs": null,
+    "confidence": null
+  }
+]

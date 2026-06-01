@@ -258,10 +258,77 @@
       margin: 12px 0;
     }
 
+    .module-map,
+    .architecture-map {
+      display: grid;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .module-map {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .module-card,
+    .arch-node {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfdff;
+      padding: 14px;
+    }
+
+    .module-card h3,
+    .arch-node strong {
+      margin: 0 0 8px;
+      display: block;
+    }
+
+    .module-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .architecture-map {
+      grid-template-columns: 1fr;
+    }
+
+    .arch-flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .arch-node {
+      min-height: 112px;
+    }
+
+    .arch-node span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .arch-arrow {
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 22px;
+    }
+
     .shot-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
       gap: 16px;
+    }
+
+    figure,
+    figure img {
+      cursor: default;
+      transform: none;
+      transition: none;
     }
 
     footer {
@@ -275,6 +342,8 @@
       header { padding-left: 0; padding-right: 0; }
       .two-col { grid-template-columns: 1fr; }
       .shot-grid { grid-template-columns: 1fr; }
+      .arch-flow { grid-template-columns: 1fr; }
+      .arch-arrow { transform: rotate(90deg); }
     }
   </style>
 </head>
@@ -287,7 +356,7 @@
         <div class="meta-card"><span>前端地址</span><strong>http://localhost:5176/</strong></div>
         <div class="meta-card"><span>后端地址</span><strong>http://localhost:18082/</strong></div>
         <div class="meta-card"><span>测试时间</span><strong>2026-05-31 00:47</strong></div>
-        <div class="meta-card"><span>截图数量</span><strong>17 张功能截图</strong></div>
+        <div class="meta-card"><span>截图数量</span><strong>17 张教程截图 + 43 张视频截图</strong></div>
       </div>
     </div>
   </header>
@@ -319,6 +388,58 @@
         <div class="callout">新增菜单权限在登录时加载。修改权限或升级数据库后，请退出系统并重新登录。</div>
       </div>
 
+      <div class="panel">
+        <h2>功能模块图</h2>
+        <p>系统按管理员、教师、学生三类角色组织功能，每个角色覆盖从基础数据到考试闭环的核心操作。</p>
+        <div class="module-map">
+          <div class="module-card">
+            <h3>管理员端</h3>
+            <ul>
+              <li>用户、班级、课程、授课安排</li>
+              <li>公告发布、角色权限、操作日志</li>
+              <li>备份恢复记录、基础数据维护</li>
+            </ul>
+          </div>
+          <div class="module-card">
+            <h3>教师端</h3>
+            <ul>
+              <li>题库导入、查重、审核、新增修改</li>
+              <li>手动组卷、AI 组卷、考试发布</li>
+              <li>人工阅卷、成绩分析、监控、复查</li>
+            </ul>
+          </div>
+          <div class="module-card">
+            <h3>学生端</h3>
+            <ul>
+              <li>在线考试、倒计时、提交答卷</li>
+              <li>历史成绩、错题解析、AI 学习建议</li>
+              <li>成绩申诉、通知中心、个人资料</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>系统框架图</h2>
+        <p>前端负责角色界面和权限菜单，后端承载考试业务，数据库保存全过程数据，AI 服务提供出题、组卷和错题建议。</p>
+        <div class="architecture-map">
+          <div class="arch-flow">
+            <div class="arch-node"><strong>浏览器用户</strong><span>管理员、教师、学生三类角色入口</span></div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node"><strong>Vue 3 前端</strong><span>Element Plus、Pinia、Vue Router、考试作答页</span></div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node"><strong>Spring Boot API</strong><span>鉴权、题库、试卷、考试、阅卷、统计接口</span></div>
+          </div>
+          <div class="arch-flow">
+            <div class="arch-node"><strong>MySQL 数据库</strong><span>用户、课程、题库、试卷、答案、日志、通知</span></div>
+            <div class="arch-arrow">↔</div>
+            <div class="arch-node"><strong>业务服务层</strong><span>考试时间控制、防重复、评分、申诉、监控</span></div>
+            <div class="arch-arrow">↔</div>
+            <div class="arch-node"><strong>讯飞星火 API</strong><span>AI 出题、AI 组卷、错题解析、学习建议</span></div>
+          </div>
+        </div>
+      </div>
+
       <figure>
         <img src="docs/tutorial-assets/01-login.png" alt="登录页截图" />
         <figcaption>登录页：可选择管理员、教师、学生演示账号。</figcaption>
@@ -345,7 +466,7 @@
       <div class="panel">
         <h2>相关项目推荐</h2>
         <p>整理毕业设计材料时，除了系统本身，还经常需要绘制系统架构图、业务流程图、ER 图和功能结构图。可以配合使用毕业论文画图助手：</p>
-        <p><a href="https://gitee.com/chenmin_1_2857135639/bishelunwen" target="_blank" rel="noreferrer">https://gitee.com/chenmin_1_2857135639/bishelunwen</a></p>
+        <p><a href="https://gitee.com/chenmin_1_2857135639/bishelunwen" target="_blank" rel="noreferrer">毕业论文画图助手</a></p>
       </div>
     </section>
 

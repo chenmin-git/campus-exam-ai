@@ -25,6 +25,15 @@ backend/src/main/resources/application-local.yml
 # Temporary screenshots generated during UI iteration
 dashboard-*.png
 login-*.png
+docs/full-demo-check-*.png
+docs/campus-exam-ai-demo-preview.png
+
+# Demo video local/generated leftovers
+demo-video/node_modules/
+demo-video/dist/
+demo-video/out/
+demo-video/public/demo-captions.json
+demo-video/public/screens/
 
 # Personal documents
 毕业设计（论文）任务书.docx

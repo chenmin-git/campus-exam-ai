@@ -1,0 +1,499 @@
+{
+  "startedAt": "2026-06-01T02:58:10.635Z",
+  "api": {
+    "login:admin": true,
+    "login:teacher": true,
+    "login:student2": true
+  },
+  "created": {
+    "classId": 8,
+    "courseId": 8,
+    "userId": 12,
+    "teacherCourseId": 9,
+    "backupId": 13,
+    "singleQuestionId": 30,
+    "shortQuestionId": 31,
+    "aiQuestionCount": 2,
+    "aiPaperQuestionCount": 2,
+    "paperId": 15,
+    "paperTitle": "完整演示试卷 1780282690637-已编辑",
+    "attemptId": 19,
+    "appealId": 10
+  },
+  "screenshots": [
+    {
+      "image": "01-login.png",
+      "title": "登录页与演示账号",
+      "role": "全角色",
+      "tags": [
+        "管理员",
+        "教师",
+        "学生"
+      ],
+      "caption": "系统提供管理员、教师、学生三类入口，方便演示完整业务闭环。"
+    },
+    {
+      "image": "02-admin-dashboard.png",
+      "title": "管理员工作台",
+      "role": "管理员",
+      "tags": [
+        "用户规模",
+        "题库结构",
+        "考试概览"
+      ],
+      "caption": "管理员工作台汇总用户、课程、题库、试卷和考试运行数据。"
+    },
+    {
+      "image": "03-admin-users-list.png",
+      "title": "用户管理列表",
+      "role": "管理员",
+      "tags": [
+        "查询",
+        "导出",
+        "启用状态"
+      ],
+      "caption": "用户管理支持查看账号、角色、联系方式和启用状态。"
+    },
+    {
+      "image": "04-admin-user-add.png",
+      "title": "新增用户",
+      "role": "管理员",
+      "tags": [
+        "新增",
+        "角色",
+        "初始密码"
+      ],
+      "caption": "新增用户时可以设置角色、班级、联系方式和初始密码。"
+    },
+    {
+      "image": "05-admin-user-edit.png",
+      "title": "编辑用户",
+      "role": "管理员",
+      "tags": [
+        "修改",
+        "停用启用",
+        "资料维护"
+      ],
+      "caption": "编辑用户可修改姓名、电话、邮箱、角色和启用状态。"
+    },
+    {
+      "image": "06-admin-classes-list.png",
+      "title": "班级管理",
+      "role": "管理员",
+      "tags": [
+        "班级",
+        "年级",
+        "专业"
+      ],
+      "caption": "班级管理维护学生所属班级、年级和专业信息。"
+    },
+    {
+      "image": "07-admin-class-add.png",
+      "title": "新增班级",
+      "role": "管理员",
+      "tags": [
+        "新增",
+        "年级",
+        "专业"
+      ],
+      "caption": "管理员可以新增班级，为学生和授课安排提供基础数据。"
+    },
+    {
+      "image": "08-admin-courses-list.png",
+      "title": "课程管理",
+      "role": "管理员",
+      "tags": [
+        "课程编号",
+        "课程简介",
+        "导出"
+      ],
+      "caption": "课程管理维护课程编号、课程名称和课程简介。"
+    },
+    {
+      "image": "09-admin-course-add.png",
+      "title": "新增课程",
+      "role": "管理员",
+      "tags": [
+        "新增",
+        "编号",
+        "简介"
+      ],
+      "caption": "新增课程后，教师题库和试卷可以按课程归类。"
+    },
+    {
+      "image": "10-admin-course-edit.png",
+      "title": "编辑课程",
+      "role": "管理员",
+      "tags": [
+        "修改",
+        "课程信息",
+        "保存"
+      ],
+      "caption": "课程信息支持编辑保存，操作会进入系统日志。"
+    },
+    {
+      "image": "11-admin-teaching-list.png",
+      "title": "授课安排",
+      "role": "管理员",
+      "tags": [
+        "教师",
+        "课程",
+        "班级绑定"
+      ],
+      "caption": "授课安排把教师、课程和班级绑定起来，决定学生可参加的考试范围。"
+    },
+    {
+      "image": "12-admin-teaching-add.png",
+      "title": "新增授课安排",
+      "role": "管理员",
+      "tags": [
+        "新增",
+        "教师课程",
+        "班级覆盖"
+      ],
+      "caption": "新增授课安排后，相关班级学生可以看到对应课程试卷。"
+    },
+    {
+      "image": "13-admin-announcements-list.png",
+      "title": "公告管理",
+      "role": "管理员",
+      "tags": [
+        "公告",
+        "显示隐藏",
+        "工作台"
+      ],
+      "caption": "公告会展示在工作台，用于考试安排和系统通知。"
+    },
+    {
+      "image": "14-admin-announcement-add.png",
+      "title": "发布公告",
+      "role": "管理员",
+      "tags": [
+        "新增",
+        "标题",
+        "内容"
+      ],
+      "caption": "管理员可以发布公告，控制公告是否显示。"
+    },
+    {
+      "image": "15-admin-permissions.png",
+      "title": "权限管理",
+      "role": "管理员",
+      "tags": [
+        "角色权限",
+        "菜单控制",
+        "保存"
+      ],
+      "caption": "权限管理按角色勾选功能菜单，用户重新登录后生效。"
+    },
+    {
+      "image": "16-admin-logs.png",
+      "title": "操作日志",
+      "role": "管理员",
+      "tags": [
+        "审计",
+        "动作",
+        "目标"
+      ],
+      "caption": "关键操作会记录到日志，便于追踪管理员、教师和学生行为。"
+    },
+    {
+      "image": "17-admin-backup.png",
+      "title": "备份恢复",
+      "role": "管理员",
+      "tags": [
+        "创建备份",
+        "恢复",
+        "记录"
+      ],
+      "caption": "备份恢复页面记录逻辑备份和恢复状态，适合演示数据管理。"
+    },
+    {
+      "image": "18-teacher-dashboard.png",
+      "title": "教师工作台",
+      "role": "教师",
+      "tags": [
+        "待阅卷",
+        "申诉",
+        "班级覆盖"
+      ],
+      "caption": "教师工作台突出待人工阅卷、待处理申诉和授课班级覆盖。"
+    },
+    {
+      "image": "19-teacher-questions-list.png",
+      "title": "题库管理",
+      "role": "教师",
+      "tags": [
+        "多题型",
+        "导入",
+        "审核"
+      ],
+      "caption": "题库覆盖客观题、简答题和编程题，并支持审核状态维护。"
+    },
+    {
+      "image": "20-teacher-question-add.png",
+      "title": "新增题目",
+      "role": "教师",
+      "tags": [
+        "新增",
+        "题型",
+        "知识点"
+      ],
+      "caption": "新增题目时可以选择题型、难度、知识点和解析。"
+    },
+    {
+      "image": "21-teacher-question-edit.png",
+      "title": "编辑题目",
+      "role": "教师",
+      "tags": [
+        "修改",
+        "选项",
+        "审核状态"
+      ],
+      "caption": "教师可编辑题干、选项、答案、解析和审核状态。"
+    },
+    {
+      "image": "22-teacher-ai-question.png",
+      "title": "AI 出题",
+      "role": "教师",
+      "tags": [
+        "讯飞星火",
+        "题型",
+        "难度"
+      ],
+      "caption": "AI 出题按课程、知识点、题型、数量和难度生成题目草稿。"
+    },
+    {
+      "image": "23-teacher-question-duplicate.png",
+      "title": "题目查重",
+      "role": "教师",
+      "tags": [
+        "查重",
+        "重复题干",
+        "质量控制"
+      ],
+      "caption": "题库查重用于发现重复题干，提升题库维护质量。"
+    },
+    {
+      "image": "24-teacher-papers-list.png",
+      "title": "试卷管理",
+      "role": "教师",
+      "tags": [
+        "考试时间",
+        "重考",
+        "发布"
+      ],
+      "caption": "试卷列表展示时长、总分、发布状态和是否允许重考。"
+    },
+    {
+      "image": "25-teacher-paper-add.png",
+      "title": "新增试卷",
+      "role": "教师",
+      "tags": [
+        "组卷",
+        "分值",
+        "考试时间"
+      ],
+      "caption": "手动组卷可勾选题目、设置分值、配置考试时间和重考规则。"
+    },
+    {
+      "image": "26-teacher-paper-edit.png",
+      "title": "编辑试卷",
+      "role": "教师",
+      "tags": [
+        "修改",
+        "发布开关",
+        "题目分值"
+      ],
+      "caption": "教师可以编辑试卷名称、时长、发布状态和题目分值。"
+    },
+    {
+      "image": "27-teacher-ai-paper.png",
+      "title": "AI 智能组卷",
+      "role": "教师",
+      "tags": [
+        "题型比例",
+        "难度比例",
+        "知识点覆盖"
+      ],
+      "caption": "AI 组卷支持题型比例、难度比例和知识点覆盖约束。"
+    },
+    {
+      "image": "28-teacher-scores.png",
+      "title": "成绩管理",
+      "role": "教师",
+      "tags": [
+        "客观题",
+        "主观题",
+        "提交状态"
+      ],
+      "caption": "成绩管理汇总学生提交、客观题得分、主观题得分和复核状态。"
+    },
+    {
+      "image": "29-teacher-manual.png",
+      "title": "人工阅卷",
+      "role": "教师",
+      "tags": [
+        "简答题",
+        "编程题",
+        "批注"
+      ],
+      "caption": "人工阅卷可录入主观题分数和教师批注，并重新计算总分。"
+    },
+    {
+      "image": "30-teacher-analysis.png",
+      "title": "成绩分析报表",
+      "role": "教师",
+      "tags": [
+        "均分",
+        "正确率",
+        "薄弱知识点"
+      ],
+      "caption": "成绩分析展示班级统计、题目正确率、及格率和薄弱知识点。"
+    },
+    {
+      "image": "31-teacher-monitor.png",
+      "title": "考试监控",
+      "role": "教师",
+      "tags": [
+        "切屏",
+        "全屏退出",
+        "IP 设备"
+      ],
+      "caption": "监控页面记录切屏、失焦、全屏异常、IP 和设备信息。"
+    },
+    {
+      "image": "32-teacher-appeals.png",
+      "title": "成绩复查处理",
+      "role": "教师",
+      "tags": [
+        "申诉",
+        "通过驳回",
+        "复核意见"
+      ],
+      "caption": "教师可以处理学生成绩复查申请，并记录处理结果。"
+    },
+    {
+      "image": "33-student-dashboard.png",
+      "title": "学生工作台",
+      "role": "学生",
+      "tags": [
+        "可参加考试",
+        "待复盘错题",
+        "薄弱知识点"
+      ],
+      "caption": "学生工作台展示可参加考试、历史表现、待复盘错题和薄弱知识点。"
+    },
+    {
+      "image": "34-student-exams-list.png",
+      "title": "在线考试列表",
+      "role": "学生",
+      "tags": [
+        "可考试",
+        "开始考试",
+        "重考规则"
+      ],
+      "caption": "在线考试列表按班级和课程展示当前可参加试卷。"
+    },
+    {
+      "image": "35-student-exam-running.png",
+      "title": "考试作答页",
+      "role": "学生",
+      "tags": [
+        "倒计时",
+        "答题进度",
+        "全屏"
+      ],
+      "caption": "进入考试后展示倒计时、答题进度、全屏按钮和题目作答区。"
+    },
+    {
+      "image": "36-student-exam-answering.png",
+      "title": "学生作答",
+      "role": "学生",
+      "tags": [
+        "主观题",
+        "答案输入",
+        "提交试卷"
+      ],
+      "caption": "学生可以完成客观题选择和主观题输入，提交后进入评分流程。"
+    },
+    {
+      "image": "37-student-attempts.png",
+      "title": "历史成绩",
+      "role": "学生",
+      "tags": [
+        "成绩",
+        "状态",
+        "提交时间"
+      ],
+      "caption": "历史成绩保存每次考试记录，方便学生回看得分和提交状态。"
+    },
+    {
+      "image": "38-student-wrong.png",
+      "title": "错题解析",
+      "role": "学生",
+      "tags": [
+        "错题",
+        "答案",
+        "解析"
+      ],
+      "caption": "错题解析展示学生答案、正确答案和原始解析。"
+    },
+    {
+      "image": "39-student-wrong-ai.png",
+      "title": "AI 错题解析",
+      "role": "学生",
+      "tags": [
+        "AI 解析",
+        "错因",
+        "复习建议"
+      ],
+      "caption": "学生可以生成 AI 错题解析，理解错因并获得复习建议。"
+    },
+    {
+      "image": "40-student-advice.png",
+      "title": "个性化学习建议",
+      "role": "学生",
+      "tags": [
+        "知识点清单",
+        "错题统计",
+        "练习方向"
+      ],
+      "caption": "学习建议根据错题知识点自动生成复习清单和练习方向。"
+    },
+    {
+      "image": "41-student-appeals.png",
+      "title": "成绩申诉",
+      "role": "学生",
+      "tags": [
+        "选择考试",
+        "填写原因",
+        "处理记录"
+      ],
+      "caption": "学生可以对成绩提出复查申请，并查看教师处理回复。"
+    },
+    {
+      "image": "42-student-notifications.png",
+      "title": "通知中心",
+      "role": "学生",
+      "tags": [
+        "考试提醒",
+        "成绩通知",
+        "已读未读"
+      ],
+      "caption": "通知中心集中展示考试、复核和系统消息，并支持标记已读。"
+    },
+    {
+      "image": "43-student-profile.png",
+      "title": "个人中心",
+      "role": "学生",
+      "tags": [
+        "资料修改",
+        "密码修改",
+        "保存"
+      ],
+      "caption": "个人中心支持修改基本资料和更新密码。"
+    }
+  ],
+  "finishedAt": "2026-06-01T02:59:26.813Z"
+}

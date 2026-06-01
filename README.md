@@ -4,6 +4,34 @@
 
 ![登录页](docs/tutorial-assets/01-login.png)
 
+## 功能模块图
+
+```mermaid
+flowchart LR
+  A[管理员端] --> A1[用户/班级/课程]
+  A --> A2[授课安排/公告]
+  A --> A3[权限/日志/备份]
+  B[教师端] --> B1[题库导入/查重/审核]
+  B --> B2[手动组卷/AI 组卷]
+  B --> B3[人工阅卷/成绩分析/考试监控]
+  C[学生端] --> C1[在线考试/历史成绩]
+  C --> C2[错题解析/学习建议]
+  C --> C3[成绩申诉/通知中心/个人资料]
+```
+
+## 系统框架图
+
+```mermaid
+flowchart TB
+  U[浏览器用户] --> F[Vue 3 + Element Plus 前端]
+  F --> R[Vue Router + Pinia 权限状态]
+  F --> API[Spring Boot REST API]
+  API --> S[业务服务层]
+  S --> DB[(MySQL 数据库)]
+  S --> AI[讯飞星火 API]
+  S --> LOG[操作日志/通知/监控事件]
+```
+
 ## 功能亮点
 
 - 管理员：用户、课程、班级、授课、公告、权限、操作日志、备份恢复记录。
@@ -15,6 +43,12 @@
 
 完整功能说明见：[docs/功能清单.md](docs/功能清单.md)  
 系统使用教程见：[教程.html](教程.html)
+
+## 演示视频
+
+完整功能演示视频见：[docs/campus-exam-ai-full-demo.mp4](docs/campus-exam-ai-full-demo.mp4)
+
+[![校园智能在线考试系统完整功能演示](docs/campus-exam-ai-full-demo-preview.png)](docs/campus-exam-ai-full-demo.mp4)
 
 ## 在线截图
 
@@ -154,7 +188,7 @@ docs/tutorial-assets/test-report.json
 
 写毕业论文时，经常还需要画系统架构图、流程图、ER 图、业务流程图。可以配合这个画图助手使用：
 
-**毕业论文画图助手：** https://gitee.com/chenmin_1_2857135639/bishelunwen
+**毕业论文画图助手：** [查看项目](https://gitee.com/chenmin_1_2857135639/bishelunwen)
 
 这个考试系统适合作为业务系统主体，画图助手适合辅助完成论文中的系统设计图、流程图和结构图，两者搭配更方便做毕业设计材料整理。
 
