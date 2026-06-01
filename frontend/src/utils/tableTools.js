@@ -49,6 +49,7 @@ export function examStatusName(status) {
     SUBMITTED: '已提交',
     PENDING_REVIEW: '待复核',
     TIMEOUT: '已超时',
+    EXPIRED: '已过期',
     CANCELLED: '已取消'
   }[status] || status || '-'
 }
@@ -78,6 +79,73 @@ export function backupStatusName(status) {
     CREATED: '已创建',
     RESTORED: '已恢复'
   }[status] || status || '-'
+}
+
+export function roleName(role) {
+  return {
+    ADMIN: '管理员',
+    TEACHER: '教师',
+    STUDENT: '学生',
+    SYSTEM: '系统'
+  }[role] || role || '-'
+}
+
+export function monitorEventName(eventType) {
+  return {
+    START: '开始考试',
+    SUBMIT: '提交考试',
+    TIMEOUT: '到时自动提交',
+    BLUR: '窗口失焦',
+    VISIBILITY_CHANGE: '切换到后台',
+    FULLSCREEN_ENTER: '进入全屏',
+    FULLSCREEN_EXIT: '退出全屏',
+    FULLSCREEN_FAIL: '全屏失败'
+  }[eventType] || eventType || '-'
+}
+
+export function operationTargetName(target) {
+  if (!target) return '-'
+  const text = String(target)
+  const match = text.match(/^([A-Za-z]+):(.+)$/)
+  if (!match) return roleName(text)
+  const [, type, id] = match
+  const name = {
+    attempt: '考试记录',
+    paper: '试卷',
+    question: '题目',
+    answer: '答题记录',
+    appeal: '申诉记录',
+    user: '用户',
+    course: '课程',
+    class: '班级',
+    teacherCourse: '授课安排',
+    announcement: '公告',
+    backup: '备份记录'
+  }[type] || type
+  return `${name} #${id}`
+}
+
+export function operationDetailName(detail) {
+  if (detail == null || detail === '') return '-'
+  const text = String(detail)
+  const eventMatch = text.match(/^([A-Z_]+):(.*)$/)
+  if (eventMatch) {
+    const eventName = monitorEventName(eventMatch[1])
+    const rest = operationDetailName(eventMatch[2])
+    return rest === '-' || rest === eventName ? eventName : `${eventName}：${rest}`
+  }
+  if (/^score=/.test(text)) return `得分：${text.replace(/^score=/, '')}`
+  if (/^paper:/.test(text)) return operationTargetName(text)
+  if (/^attempt:/.test(text)) return operationTargetName(text)
+  if (/^answer:/.test(text)) return operationTargetName(text)
+  if (/^appeal:/.test(text)) return operationTargetName(text)
+  return appealStatusName(text) !== text
+    ? appealStatusName(text)
+    : examStatusName(text) !== text
+      ? examStatusName(text)
+      : reviewStatusName(text) !== text
+        ? reviewStatusName(text)
+        : roleName(text)
 }
 
 export function cleanGeneratedSuffix(value) {

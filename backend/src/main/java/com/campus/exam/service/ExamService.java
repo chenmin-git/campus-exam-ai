@@ -419,9 +419,13 @@ public class ExamService {
         event.setUserAgent(httpRequest.getHeader("User-Agent"));
         event.setCreatedAt(LocalDateTime.now());
         monitorEventMapper.insert(event);
-        operationLogService.log("考试监控", "attempt:" + attempt.getId(), request.eventType() + ":" + request.detail());
+        String eventName = monitorEventName(request.eventType());
+        String detail = request.detail() == null || request.detail().isBlank() || request.detail().equals(eventName)
+                ? eventName
+                : eventName + "：" + request.detail();
+        operationLogService.log("考试监控", "attempt:" + attempt.getId(), detail);
         if (paper != null && request.eventType() != null && List.of("BLUR", "VISIBILITY_CHANGE", "FULLSCREEN_EXIT").contains(request.eventType())) {
-            notificationService.create(attempt.getStudentId(), null, "考试异常提醒", "系统检测到你的考试存在异常行为：" + request.eventType());
+            notificationService.create(attempt.getStudentId(), null, "考试异常提醒", "系统检测到你的考试存在异常行为：" + eventName);
         }
         return event;
     }
@@ -606,6 +610,23 @@ public class ExamService {
 
     private double passLine(Paper paper) {
         return paper == null || paper.getTotalScore() == null ? 60 : paper.getTotalScore() * 0.6;
+    }
+
+    private String monitorEventName(String eventType) {
+        if (eventType == null) {
+            return "考试事件";
+        }
+        return switch (eventType) {
+            case "START" -> "开始考试";
+            case "SUBMIT" -> "提交考试";
+            case "TIMEOUT" -> "到时自动提交";
+            case "BLUR" -> "窗口失焦";
+            case "VISIBILITY_CHANGE" -> "切换到后台";
+            case "FULLSCREEN_ENTER" -> "进入全屏";
+            case "FULLSCREEN_EXIT" -> "退出全屏";
+            case "FULLSCREEN_FAIL" -> "全屏失败";
+            default -> eventType;
+        };
     }
 
     private String className(ClassInfo classInfo) {

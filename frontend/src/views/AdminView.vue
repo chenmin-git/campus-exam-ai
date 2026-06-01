@@ -155,10 +155,16 @@
             <template #default="{ row }">{{ formatDateTime(row.createdAt) }}</template>
           </el-table-column>
           <el-table-column prop="username" label="用户" width="140" />
-          <el-table-column prop="role" label="角色" width="100" />
+          <el-table-column label="角色" width="100">
+            <template #default="{ row }">{{ roleName(row.role) }}</template>
+          </el-table-column>
           <el-table-column prop="action" label="动作" width="140" />
-          <el-table-column prop="target" label="目标" width="160" />
-          <el-table-column prop="detail" label="详情" />
+          <el-table-column label="目标" width="160">
+            <template #default="{ row }">{{ operationTargetName(row.target) }}</template>
+          </el-table-column>
+          <el-table-column label="详情">
+            <template #default="{ row }">{{ operationDetailName(row.detail) }}</template>
+          </el-table-column>
         </el-table>
       </el-tab-pane>
 
@@ -248,7 +254,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import http from '../api/http'
-import { backupStatusName, createPager, exportXls, formatDateTime, usePagedRows } from '../utils/tableTools'
+import { backupStatusName, createPager, exportXls, formatDateTime, operationDetailName, operationTargetName, usePagedRows } from '../utils/tableTools'
 
 const route = useRoute()
 const active = ref(route.params.section || 'users')

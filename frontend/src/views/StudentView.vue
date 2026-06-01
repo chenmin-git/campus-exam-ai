@@ -5,7 +5,10 @@
         <h2 class="section-title">学生考试中心</h2>
         <div class="muted">在线考试、成绩记录、错题 AI 解析和个人资料</div>
       </div>
-      <el-tag v-if="current" type="danger" size="large">考试中 · {{ remainingText }}</el-tag>
+      <div v-if="current" class="exam-running-tools">
+        <el-tag type="danger" size="large">考试中 · {{ remainingText }}</el-tag>
+        <el-button type="primary" @click="examDialog = true">继续作答</el-button>
+      </div>
     </div>
 
     <el-tabs v-model="active" class="route-tabs">
@@ -14,7 +17,7 @@
           <div v-for="paper in papers" :key="paper.id" class="panel exam-card">
             <div class="paper-head">
               <h3>{{ cleanGeneratedSuffix(paper.title) }}</h3>
-              <el-tag :type="attemptedPaperIds.includes(paper.id) ? 'info' : 'success'">{{ attemptedPaperIds.includes(paper.id) ? '已参加' : '可考试' }}</el-tag>
+              <el-tag :type="paperTagType(paper)">{{ paperStateName(paper) }}</el-tag>
             </div>
             <div class="exam-meta">
               <span>时长 {{ paper.durationMinutes }} 分钟</span>
@@ -26,36 +29,57 @@
               <span>结束 {{ formatDateTimeMinute(paper.endTime, '不限') }}</span>
               <strong>{{ paper.allowRetake ? '允许重考' : '禁止重考' }}</strong>
             </div>
-            <el-button type="primary" @click="confirmStart(paper)">开始考试</el-button>
+            <el-button type="primary" :disabled="!canStartPaper(paper)" @click="confirmStart(paper)">{{ startButtonText(paper) }}</el-button>
           </div>
         </div>
 
-        <div v-if="current" class="panel exam">
-          <div class="toolbar">
-            <div>
-              <h2 class="section-title">{{ cleanGeneratedSuffix(current.paper.title) }}</h2>
-              <div class="muted">已作答 {{ answeredCount }} / {{ current.questions.length }}</div>
+        <el-dialog
+          v-model="examDialog"
+          fullscreen
+          append-to-body
+          :show-close="false"
+          :close-on-click-modal="false"
+          :close-on-press-escape="false"
+          class="exam-dialog"
+        >
+          <template #header>
+            <div v-if="current" class="exam-dialog-title">
+              <div>
+                <h2>{{ cleanGeneratedSuffix(current.paper.title) }}</h2>
+                <span>已作答 {{ answeredCount }} / {{ current.questions.length }}</span>
+              </div>
+              <el-tag type="danger" size="large">剩余时间 {{ remainingText }}</el-tag>
             </div>
-            <div class="exam-head-actions">
-              <el-progress type="circle" :width="72" :percentage="answerPercent" />
-              <el-button @click="enterFullscreen">全屏</el-button>
+          </template>
+
+          <div v-if="current" class="panel exam">
+            <div class="toolbar">
+              <div>
+                <h2 class="section-title">{{ cleanGeneratedSuffix(current.paper.title) }}</h2>
+                <div class="muted">请在考试弹窗内完成作答，提交后自动回到历史成绩。</div>
+              </div>
+              <div class="exam-head-actions">
+                <el-progress type="circle" :width="72" :percentage="answerPercent" />
+                <el-button @click="enterFullscreen">全屏</el-button>
+              </div>
+            </div>
+            <div v-for="(q, index) in current.questions" :key="q.id" class="question">
+              <h3>{{ index + 1 }}. {{ cleanGeneratedSuffix(q.stem) }}（{{ q.score }}分）</h3>
+              <el-checkbox-group v-if="q.type === 'MULTIPLE'" v-model="answers[q.id]">
+                <el-checkbox v-for="op in q.options" :key="op.id" :value="op.optionKey">{{ op.optionKey }}. {{ op.optionText }}</el-checkbox>
+              </el-checkbox-group>
+              <el-radio-group v-else-if="q.type === 'SINGLE' || q.type === 'JUDGE'" v-model="answers[q.id]">
+                <el-radio v-for="op in q.options" :key="op.id" :value="op.optionKey">{{ op.optionKey }}. {{ op.optionText }}</el-radio>
+              </el-radio-group>
+              <el-input v-else v-model="answers[q.id]" type="textarea" :rows="4" placeholder="请输入简答/编程答案" />
+            </div>
+            <div class="submit-bar">
+              <el-button @click="examDialog = false">返回列表</el-button>
+              <el-button type="success" @click="submitExam">提交试卷</el-button>
             </div>
           </div>
-          <div v-for="(q, index) in current.questions" :key="q.id" class="question">
-            <h3>{{ index + 1 }}. {{ cleanGeneratedSuffix(q.stem) }}（{{ q.score }}分）</h3>
-            <el-checkbox-group v-if="q.type === 'MULTIPLE'" v-model="answers[q.id]">
-              <el-checkbox v-for="op in q.options" :key="op.id" :value="op.optionKey">{{ op.optionKey }}. {{ op.optionText }}</el-checkbox>
-            </el-checkbox-group>
-            <el-radio-group v-else-if="q.type === 'SINGLE' || q.type === 'JUDGE'" v-model="answers[q.id]">
-              <el-radio v-for="op in q.options" :key="op.id" :value="op.optionKey">{{ op.optionKey }}. {{ op.optionText }}</el-radio>
-            </el-radio-group>
-            <el-input v-else v-model="answers[q.id]" type="textarea" :rows="4" placeholder="请输入简答/编程答案" />
-          </div>
-          <div class="submit-bar">
-            <el-button @click="current=null">暂不提交</el-button>
-            <el-button type="success" @click="submitExam">提交试卷</el-button>
-          </div>
-        </div>
+        </el-dialog>
+
       </el-tab-pane>
 
       <el-tab-pane label="历史成绩" name="attempts">
@@ -199,6 +223,7 @@ const adviceRows = ref([])
 const appealRows = ref([])
 const notifications = ref([])
 const current = ref(null)
+const examDialog = ref(false)
 const answers = reactive({})
 const profile = reactive({})
 const passwordForm = reactive({ oldPassword: '', newPassword: '' })
@@ -211,7 +236,6 @@ const attemptPager = createPager()
 const attemptRows = computed(() => attempts.value)
 const pagedAttempts = usePagedRows(attemptRows, attemptPager)
 
-const attemptedPaperIds = computed(() => attempts.value.map((a) => a.paperId))
 const answeredCount = computed(() => current.value ? current.value.questions.filter((q) => Array.isArray(answers[q.id]) ? answers[q.id].length : !!answers[q.id]).length : 0)
 const answerPercent = computed(() => current.value ? Math.round((answeredCount.value / current.value.questions.length) * 100) : 0)
 const remainingSeconds = computed(() => {
@@ -246,7 +270,9 @@ async function load() {
 }
 
 async function confirmStart(paper) {
-  await ElMessageBox.confirm(`确认开始《${paper.title}》？开始后系统会创建考试记录。`, '开始考试', { type: 'info' })
+  if (!canStartPaper(paper)) return
+  const title = cleanGeneratedSuffix(paper.title)
+  await ElMessageBox.confirm(`确认开始《${title}》？开始后系统会创建考试记录。`, '开始考试', { type: 'info' })
   await startExam(paper.id)
 }
 
@@ -256,6 +282,8 @@ async function startExam(id) {
   current.value.questions.forEach((q) => {
     answers[q.id] = q.type === 'MULTIPLE' ? [] : ''
   })
+  examDialog.value = true
+  active.value = 'exams'
   await recordMonitor('START', '开始考试')
 }
 
@@ -275,6 +303,7 @@ async function submitExamPayload() {
   ElMessage.success(`提交成功，得分 ${result.score}`)
   await recordMonitor('SUBMIT', '主动提交试卷')
   current.value = null
+  examDialog.value = false
   router.push('/student/attempts')
   load()
 }
@@ -362,6 +391,40 @@ function typeName(type) {
   return { SINGLE: '单选', MULTIPLE: '多选', JUDGE: '判断', SHORT: '简答', PROGRAM: '编程' }[type] || type
 }
 
+function latestPaperAttempt(paperId) {
+  return attempts.value.find((item) => item.paperId === paperId)
+}
+
+function allowRetake(paper) {
+  return paper.allowRetake === true || Number(paper.allowRetake) === 1
+}
+
+function canStartPaper(paper) {
+  const attempt = latestPaperAttempt(paper.id)
+  return !attempt || attempt.status === 'IN_PROGRESS' || allowRetake(paper)
+}
+
+function paperStateName(paper) {
+  const attempt = latestPaperAttempt(paper.id)
+  if (!attempt) return '可考试'
+  if (attempt.status === 'IN_PROGRESS') return '进行中'
+  return allowRetake(paper) ? '可重考' : '已参加'
+}
+
+function paperTagType(paper) {
+  const attempt = latestPaperAttempt(paper.id)
+  if (!attempt) return 'success'
+  if (attempt.status === 'IN_PROGRESS') return 'warning'
+  return allowRetake(paper) ? 'success' : 'info'
+}
+
+function startButtonText(paper) {
+  const attempt = latestPaperAttempt(paper.id)
+  if (!attempt) return '开始考试'
+  if (attempt.status === 'IN_PROGRESS') return '继续考试'
+  return allowRetake(paper) ? '再次考试' : '已完成'
+}
+
 function exportAttempts() {
   exportXls('历史成绩', attempts.value, [
     { label: '试卷ID', prop: 'paperId' },
@@ -410,6 +473,12 @@ onUnmounted(() => {
 <style scoped>
 .route-tabs :deep(.el-tabs__header) {
   display: none;
+}
+
+.exam-running-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .exam-card h3,
@@ -482,6 +551,44 @@ onUnmounted(() => {
 .exam,
 .wrong {
   margin-top: 16px;
+}
+
+.exam-dialog-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.exam-dialog-title h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+  color: #172033;
+}
+
+.exam-dialog-title span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+:global(.exam-dialog .el-dialog__header) {
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--line);
+  background: #f7fbff;
+  margin-right: 0;
+}
+
+:global(.exam-dialog .el-dialog__body) {
+  min-height: calc(100vh - 76px);
+  padding: 10px 28px 28px;
+  background: #eef4f8;
+}
+
+:global(.exam-dialog) .exam {
+  max-width: 1180px;
+  margin: 0 auto;
 }
 
 .wrong .toolbar {
@@ -585,6 +692,12 @@ pre {
 @media (max-width: 720px) {
   .exam-meta {
     grid-template-columns: 1fr;
+  }
+
+  .exam-running-tools,
+  .exam-dialog-title {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 </style>

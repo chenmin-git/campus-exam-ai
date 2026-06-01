@@ -170,8 +170,12 @@
         <el-table :data="monitorRows" class="panel" stripe>
           <el-table-column prop="paperId" label="试卷ID" width="90" />
           <el-table-column prop="studentId" label="学生ID" width="90" />
-          <el-table-column prop="eventType" label="事件" width="140" />
-          <el-table-column prop="detail" label="详情" />
+          <el-table-column label="事件" width="140">
+            <template #default="{ row }">{{ monitorEventName(row.eventType) }}</template>
+          </el-table-column>
+          <el-table-column label="详情">
+            <template #default="{ row }">{{ operationDetailName(row.detail) }}</template>
+          </el-table-column>
           <el-table-column prop="ip" label="IP" width="140" />
           <el-table-column prop="userAgent" label="设备" min-width="220" show-overflow-tooltip />
           <el-table-column label="时间" width="180">
@@ -374,6 +378,8 @@ import {
   examStatusName,
   exportXls,
   formatDateTime,
+  monitorEventName,
+  operationDetailName,
   reviewStatusName as formatReviewStatusName,
   usePagedRows
 } from '../utils/tableTools'
