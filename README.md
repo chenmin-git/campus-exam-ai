@@ -1,5 +1,28 @@
 # 校园智能在线考试系统
 
+<!-- open-source-intro-start -->
+> **作者寄语**
+> 
+> 主包是 02 年的，15 岁开始学习计算机，17 岁入行。虽然没有上过大学，但已经帮助很多人顺利毕业和就业。开源这些项目，希望能帮助到你们，也顺便推荐我的论文 AI 工具。如果对主包感兴趣，可以在抖音搜索：迷人闹；如果想学习 AI 编程或需要辅导，也可以联系主包。
+> 
+> **论文/毕设画图工具推荐：** [毕业论文画图助手](https://gitee.com/chenmin_1_2857135639/bishelunwen) 支持架构图、流程图、ER 图、业务流程图等，适合配合本项目完成论文和答辩材料。
+<!-- open-source-intro-end -->
+
+<!-- third-party-api-start -->
+## 第三方 API 配置说明
+
+### 讯飞星火（Spark Chat Completions）
+
+- 用途：用于 AI 生成、错题解析、学习建议或智能业务助手等功能。
+- 官方接口文档：<https://www.xfyun.cn/doc/spark/Web.html>
+- 开放平台/控制台：<https://console.xfyun.cn/>
+- 获取方式：注册讯飞开放平台账号，创建或开通星火大模型应用，在应用凭据页获取 APIKey 和 APISecret，按 `APIKey:APISecret` 的格式组合为 APIPassword。
+- 环境变量：`SPARK_API_PASSWORD=your_api_key:your_api_secret`，可选 `SPARK_API_URL=https://spark-api-open.xf-yun.com/v1/chat/completions`、`SPARK_MODEL=generalv3`。
+
+> 注意：不要把真实 API Key、Secret、Token 提交到代码仓库。开源示例只保留占位值，本地运行时再写入 `.env` 或系统环境变量。
+<!-- third-party-api-end -->
+
+
 一个面向毕业设计、课程设计和二次开发的校园智能在线考试系统。项目基于 Spring Boot 3、Vue 3、MyBatis-Plus、MySQL、Element Plus 和讯飞星火 API，实现管理员、教师、学生三端完整考试业务闭环。
 
 ![登录页](docs/tutorial-assets/01-login.png)
